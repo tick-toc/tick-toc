@@ -1,8 +1,9 @@
 endpoint: https://us1.prisma.sh/tick-toc/tick-toc/dev
-datamodel: datamodel.prisma
+datamodel: ./server/datamodel.prisma
+# set up a local endpoint and datamodel
 
 generate:
   - generator: javascript-client
-    output: ./generated/prisma-client/
+    output: ./server/generated/prisma-client/
   - generator: graphql-schema
-    output: ./generated/graphql-prisma
+    output: ./server/generated/graphql-prisma
