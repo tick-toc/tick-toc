@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "graphql": "^14.1.1",
+    "graphql-import": "^0.7.1",
     "graphql-yoga": "^1.17.0",
+    "prisma": "^1.25.1",
+    "prisma-client-lib": "^1.25.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "2.1.3"
