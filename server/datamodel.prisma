@@ -1,4 +1,26 @@
 type User {
   id: ID! @unique
-  name: String!
+  userName: String! @unique
+  password: String!
+  games: [Game!]!
+  avatar: String
+}
+
+type Game {
+  id: ID! @unique
+  modules: Int
+  modulesFailed: Int
+  startTime: Int
+  endTime: Int
+  defuser: User!
+  expert: [User!]!  @length(max: 2)
+  strikesAllowed: Int!
+  gameStatus: Status!
+  needyModules: Boolean @default(value: "false")
+}
+
+enum Status {
+  INPROGRESS
+  COMPLETED
+  FAILED
 }
