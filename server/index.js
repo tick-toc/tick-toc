@@ -14,7 +14,7 @@ const resolvers = {
 
 // 3 this will stay here
 const server = new GraphQLServer({
-    typeDefs: importSchema('./schema.graphql'),
+    typeDefs: importSchema('./server/schema.graphql'),
     // typeDefs,
     resolvers,
     context: request => ({
