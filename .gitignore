@@ -4,9 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
-
 prisma.yml
-
 # testing
 /coverage
 
