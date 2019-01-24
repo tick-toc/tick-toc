@@ -1,4 +1,5 @@
-endpoint: https://us1.prisma.sh/tick-toc/tick-toc/dev
+# endpoint: https://heroku-tick-toc-c9761f234d.herokuapp.com/tick-toc-prod/prod
+endpoint: https://us1.prisma.sh/tick-toc/tick-toc-chris/dev
 datamodel: ./server/datamodel.prisma
 # set up a local endpoint and datamodel
 
