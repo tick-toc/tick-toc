@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
-import '../styles/App.css';
 
 class Bomb extends Component {
-  render() {
+
+  componentDidMount() {
+
     var camera, scene, renderer, box;
 
     init();
@@ -47,8 +48,6 @@ class Bomb extends Component {
       dirLight.shadow.mapSize.width = 1024;
       dirLight.shadow.mapSize.height = 1024;
       scene.add( dirLight );
-    
-    
     
       var boxLoader= new GLTFLoader();
       boxLoader.load('models/box.glb', function (gltf) {
@@ -124,7 +123,6 @@ class Bomb extends Component {
               let deltaRotationQuaternion = new THREE.Quaternion().setFromEuler(
                   new THREE.Euler(toRadians(deltaMove.y * 1), 0, 0, 'XYZ')
               );
-          
               box.quaternion.multiplyQuaternions(deltaRotationQuaternion, box.quaternion);
           }
         
@@ -137,14 +135,10 @@ class Bomb extends Component {
       document.addEventListener('mouseup', (e) => {
           isDragging = false;
       });
-      
-    
       // Controls
-    
       // var controls = new THREE.OrbitControls( camera, renderer.domElement );
       // controls.target.set( 0, 1, 0 );
       // controls.update();
-    
     }
     
     function onWindowResize() {
@@ -163,12 +157,13 @@ class Bomb extends Component {
       // if (box) box.rotation.x += 0.005;
     
       renderer.render( scene, camera );
-    
     }
+  }
+
+  render() {
     
     return (
-      <div id="bomb-box">
-      </div>
+      <div id="bomb-box" />
     );
   }
 }
