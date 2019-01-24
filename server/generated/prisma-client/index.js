@@ -9,7 +9,7 @@ var models = [
     embedded: false
   },
   {
-    name: "Roles",
+    name: "RoleType",
     embedded: false
   },
   {
@@ -21,11 +21,7 @@ var models = [
     embedded: false
   },
   {
-    name: "gamePlayerRoles",
-    embedded: false
-  },
-  {
-    name: "userGameRoles",
+    name: "gameRole",
     embedded: false
   }
 ];

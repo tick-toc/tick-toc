@@ -16,8 +16,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export interface Exists {
   game: (where?: GameWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
-  gamePlayerRoles: (where?: gamePlayerRolesWhereInput) => Promise<boolean>;
-  userGameRoles: (where?: userGameRolesWhereInput) => Promise<boolean>;
+  gameRole: (where?: gameRoleWhereInput) => Promise<boolean>;
 }
 
 export interface Node {}
@@ -77,46 +76,25 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => UserConnectionPromise;
-  gamePlayerRoles: (
-    where: gamePlayerRolesWhereUniqueInput
-  ) => gamePlayerRolesPromise;
-  gamePlayerRoleses: (args?: {
-    where?: gamePlayerRolesWhereInput;
-    orderBy?: gamePlayerRolesOrderByInput;
+  gameRole: (where: gameRoleWhereUniqueInput) => gameRolePromise;
+  gameRoles: (args?: {
+    where?: gameRoleWhereInput;
+    orderBy?: gameRoleOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => FragmentableArray<gamePlayerRoles>;
-  gamePlayerRolesesConnection: (args?: {
-    where?: gamePlayerRolesWhereInput;
-    orderBy?: gamePlayerRolesOrderByInput;
+  }) => FragmentableArray<gameRole>;
+  gameRolesConnection: (args?: {
+    where?: gameRoleWhereInput;
+    orderBy?: gameRoleOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
     first?: Int;
     last?: Int;
-  }) => gamePlayerRolesConnectionPromise;
-  userGameRoles: (where: userGameRolesWhereUniqueInput) => userGameRolesPromise;
-  userGameRoleses: (args?: {
-    where?: userGameRolesWhereInput;
-    orderBy?: userGameRolesOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => FragmentableArray<userGameRoles>;
-  userGameRolesesConnection: (args?: {
-    where?: userGameRolesWhereInput;
-    orderBy?: userGameRolesOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => userGameRolesConnectionPromise;
+  }) => gameRoleConnectionPromise;
   node: (args: { id: ID_Output }) => Node;
 
   /**
@@ -155,44 +133,22 @@ export interface Prisma {
   }) => UserPromise;
   deleteUser: (where: UserWhereUniqueInput) => UserPromise;
   deleteManyUsers: (where?: UserWhereInput) => BatchPayloadPromise;
-  creategamePlayerRoles: (
-    data: gamePlayerRolesCreateInput
-  ) => gamePlayerRolesPromise;
-  updategamePlayerRoles: (args: {
-    data: gamePlayerRolesUpdateInput;
-    where: gamePlayerRolesWhereUniqueInput;
-  }) => gamePlayerRolesPromise;
-  upsertgamePlayerRoles: (args: {
-    where: gamePlayerRolesWhereUniqueInput;
-    create: gamePlayerRolesCreateInput;
-    update: gamePlayerRolesUpdateInput;
-  }) => gamePlayerRolesPromise;
-  deletegamePlayerRoles: (
-    where: gamePlayerRolesWhereUniqueInput
-  ) => gamePlayerRolesPromise;
-  deleteManygamePlayerRoleses: (
-    where?: gamePlayerRolesWhereInput
-  ) => BatchPayloadPromise;
-  createuserGameRoles: (data: userGameRolesCreateInput) => userGameRolesPromise;
-  updateuserGameRoles: (args: {
-    data: userGameRolesUpdateInput;
-    where: userGameRolesWhereUniqueInput;
-  }) => userGameRolesPromise;
-  updateManyuserGameRoleses: (args: {
-    data: userGameRolesUpdateManyMutationInput;
-    where?: userGameRolesWhereInput;
+  creategameRole: (data: gameRoleCreateInput) => gameRolePromise;
+  updategameRole: (args: {
+    data: gameRoleUpdateInput;
+    where: gameRoleWhereUniqueInput;
+  }) => gameRolePromise;
+  updateManygameRoles: (args: {
+    data: gameRoleUpdateManyMutationInput;
+    where?: gameRoleWhereInput;
   }) => BatchPayloadPromise;
-  upsertuserGameRoles: (args: {
-    where: userGameRolesWhereUniqueInput;
-    create: userGameRolesCreateInput;
-    update: userGameRolesUpdateInput;
-  }) => userGameRolesPromise;
-  deleteuserGameRoles: (
-    where: userGameRolesWhereUniqueInput
-  ) => userGameRolesPromise;
-  deleteManyuserGameRoleses: (
-    where?: userGameRolesWhereInput
-  ) => BatchPayloadPromise;
+  upsertgameRole: (args: {
+    where: gameRoleWhereUniqueInput;
+    create: gameRoleCreateInput;
+    update: gameRoleUpdateInput;
+  }) => gameRolePromise;
+  deletegameRole: (where: gameRoleWhereUniqueInput) => gameRolePromise;
+  deleteManygameRoles: (where?: gameRoleWhereInput) => BatchPayloadPromise;
 
   /**
    * Subscriptions
@@ -208,12 +164,9 @@ export interface Subscription {
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
-  gamePlayerRoles: (
-    where?: gamePlayerRolesSubscriptionWhereInput
-  ) => gamePlayerRolesSubscriptionPayloadSubscription;
-  userGameRoles: (
-    where?: userGameRolesSubscriptionWhereInput
-  ) => userGameRolesSubscriptionPayloadSubscription;
+  gameRole: (
+    where?: gameRoleSubscriptionWhereInput
+  ) => gameRoleSubscriptionPayloadSubscription;
 }
 
 export interface ClientConstructor<T> {
@@ -260,19 +213,13 @@ export type GameOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
-export type gamePlayerRolesOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC";
+export type RoleType = "DEFUSER" | "EXPERT";
 
-export type Roles = "DEFUSER" | "EXPERT";
+export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
 export type Status = "INPROGRESS" | "COMPLETED" | "FAILED";
 
-export type userGameRolesOrderByInput =
+export type gameRoleOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "role_ASC"
@@ -282,134 +229,26 @@ export type userGameRolesOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
-export type MutationType = "CREATED" | "UPDATED" | "DELETED";
-
-export interface GameUpdateManyMutationInput {
-  modules?: Int;
-  modulesFailed?: Int;
-  startTime?: Int;
-  endTime?: Int;
-  strikesAllowed?: Int;
-  gameStatus?: Status;
-  needyModules?: Boolean;
-}
-
-export type GameWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
-
-export interface GameUpdateOneRequiredInput {
-  create?: GameCreateInput;
-  update?: GameUpdateDataInput;
-  upsert?: GameUpsertNestedInput;
-  connect?: GameWhereUniqueInput;
-}
-
-export interface GameUpdateDataInput {
-  modules?: Int;
-  modulesFailed?: Int;
-  startTime?: Int;
-  endTime?: Int;
-  strikesAllowed?: Int;
-  gameStatus?: Status;
-  needyModules?: Boolean;
-}
-
-export interface gamePlayerRolesUpdateInput {
-  gameId?: GameUpdateOneRequiredInput;
-  playerId?: UserUpdateOneRequiredInput;
-}
-
-export interface UserUpdateInput {
-  userName?: String;
-  password?: String;
-  games?: GameUpdateManyInput;
-  avatar?: String;
-}
-
-export interface userGameRolesWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  role?: Roles;
-  role_not?: Roles;
-  role_in?: Roles[] | Roles;
-  role_not_in?: Roles[] | Roles;
-  userId?: UserWhereInput;
-  AND?: userGameRolesWhereInput[] | userGameRolesWhereInput;
-  OR?: userGameRolesWhereInput[] | userGameRolesWhereInput;
-  NOT?: userGameRolesWhereInput[] | userGameRolesWhereInput;
-}
-
-export interface gamePlayerRolesSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: gamePlayerRolesWhereInput;
-  AND?:
-    | gamePlayerRolesSubscriptionWhereInput[]
-    | gamePlayerRolesSubscriptionWhereInput;
-  OR?:
-    | gamePlayerRolesSubscriptionWhereInput[]
-    | gamePlayerRolesSubscriptionWhereInput;
-  NOT?:
-    | gamePlayerRolesSubscriptionWhereInput[]
-    | gamePlayerRolesSubscriptionWhereInput;
-}
-
 export interface UserCreateOneInput {
   create?: UserCreateInput;
   connect?: UserWhereUniqueInput;
 }
 
-export interface UserSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: UserWhereInput;
-  AND?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
-  OR?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
-  NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+export interface GameUpsertWithWhereUniqueNestedInput {
+  where: GameWhereUniqueInput;
+  update: GameUpdateDataInput;
+  create: GameCreateInput;
 }
 
-export interface GameCreateOneInput {
-  create?: GameCreateInput;
-  connect?: GameWhereUniqueInput;
-}
-
-export interface GameSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: GameWhereInput;
-  AND?: GameSubscriptionWhereInput[] | GameSubscriptionWhereInput;
-  OR?: GameSubscriptionWhereInput[] | GameSubscriptionWhereInput;
-  NOT?: GameSubscriptionWhereInput[] | GameSubscriptionWhereInput;
-}
-
-export interface gamePlayerRolesCreateInput {
-  gameId: GameCreateOneInput;
+export interface gameRoleCreateInput {
   playerId: UserCreateOneInput;
+  role: RoleType;
+  gameId: GameCreateOneInput;
 }
 
-export interface userGameRolesUpdateInput {
-  role?: Roles;
-  userId?: UserUpdateOneRequiredInput;
-}
+export type GameWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
 
 export interface UserUpdateManyMutationInput {
   userName?: String;
@@ -417,79 +256,8 @@ export interface UserUpdateManyMutationInput {
   avatar?: String;
 }
 
-export type gamePlayerRolesWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
-
-export interface gamePlayerRolesWhereInput {
-  id?: ID_Input;
-  id_not?: ID_Input;
-  id_in?: ID_Input[] | ID_Input;
-  id_not_in?: ID_Input[] | ID_Input;
-  id_lt?: ID_Input;
-  id_lte?: ID_Input;
-  id_gt?: ID_Input;
-  id_gte?: ID_Input;
-  id_contains?: ID_Input;
-  id_not_contains?: ID_Input;
-  id_starts_with?: ID_Input;
-  id_not_starts_with?: ID_Input;
-  id_ends_with?: ID_Input;
-  id_not_ends_with?: ID_Input;
-  gameId?: GameWhereInput;
-  playerId?: UserWhereInput;
-  AND?: gamePlayerRolesWhereInput[] | gamePlayerRolesWhereInput;
-  OR?: gamePlayerRolesWhereInput[] | gamePlayerRolesWhereInput;
-  NOT?: gamePlayerRolesWhereInput[] | gamePlayerRolesWhereInput;
-}
-
-export interface UserUpdateDataInput {
-  userName?: String;
-  password?: String;
-  games?: GameUpdateManyInput;
-  avatar?: String;
-}
-
-export interface GameCreateInput {
-  modules?: Int;
-  modulesFailed?: Int;
-  startTime?: Int;
-  endTime?: Int;
-  strikesAllowed: Int;
-  gameStatus: Status;
-  needyModules?: Boolean;
-}
-
-export interface GameUpsertNestedInput {
-  update: GameUpdateDataInput;
-  create: GameCreateInput;
-}
-
-export interface GameUpdateInput {
-  modules?: Int;
-  modulesFailed?: Int;
-  startTime?: Int;
-  endTime?: Int;
-  strikesAllowed?: Int;
-  gameStatus?: Status;
-  needyModules?: Boolean;
-}
-
-export interface userGameRolesSubscriptionWhereInput {
-  mutation_in?: MutationType[] | MutationType;
-  updatedFields_contains?: String;
-  updatedFields_contains_every?: String[] | String;
-  updatedFields_contains_some?: String[] | String;
-  node?: userGameRolesWhereInput;
-  AND?:
-    | userGameRolesSubscriptionWhereInput[]
-    | userGameRolesSubscriptionWhereInput;
-  OR?:
-    | userGameRolesSubscriptionWhereInput[]
-    | userGameRolesSubscriptionWhereInput;
-  NOT?:
-    | userGameRolesSubscriptionWhereInput[]
-    | userGameRolesSubscriptionWhereInput;
+export interface gameRoleUpdateManyMutationInput {
+  role?: RoleType;
 }
 
 export interface GameUpdateManyDataInput {
@@ -501,6 +269,18 @@ export interface GameUpdateManyDataInput {
   gameStatus?: Status;
   needyModules?: Boolean;
 }
+
+export interface GameUpdateOneRequiredInput {
+  create?: GameCreateInput;
+  update?: GameUpdateDataInput;
+  upsert?: GameUpsertNestedInput;
+  connect?: GameWhereUniqueInput;
+}
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+  userName?: String;
+}>;
 
 export interface UserWhereInput {
   id?: ID_Input;
@@ -567,14 +347,88 @@ export interface UserWhereInput {
   NOT?: UserWhereInput[] | UserWhereInput;
 }
 
+export interface GameCreateInput {
+  modules?: Int;
+  modulesFailed?: Int;
+  startTime?: Int;
+  endTime?: Int;
+  strikesAllowed: Int;
+  gameStatus: Status;
+  needyModules?: Boolean;
+}
+
+export interface UserUpdateOneRequiredInput {
+  create?: UserCreateInput;
+  update?: UserUpdateDataInput;
+  upsert?: UserUpsertNestedInput;
+  connect?: UserWhereUniqueInput;
+}
+
+export interface GameUpdateInput {
+  modules?: Int;
+  modulesFailed?: Int;
+  startTime?: Int;
+  endTime?: Int;
+  strikesAllowed?: Int;
+  gameStatus?: Status;
+  needyModules?: Boolean;
+}
+
+export interface GameCreateOneInput {
+  create?: GameCreateInput;
+  connect?: GameWhereUniqueInput;
+}
+
+export interface GameUpdateManyMutationInput {
+  modules?: Int;
+  modulesFailed?: Int;
+  startTime?: Int;
+  endTime?: Int;
+  strikesAllowed?: Int;
+  gameStatus?: Status;
+  needyModules?: Boolean;
+}
+
+export interface gameRoleSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: gameRoleWhereInput;
+  AND?: gameRoleSubscriptionWhereInput[] | gameRoleSubscriptionWhereInput;
+  OR?: gameRoleSubscriptionWhereInput[] | gameRoleSubscriptionWhereInput;
+  NOT?: gameRoleSubscriptionWhereInput[] | gameRoleSubscriptionWhereInput;
+}
+
 export interface GameUpdateManyWithWhereNestedInput {
   where: GameScalarWhereInput;
   data: GameUpdateManyDataInput;
 }
 
-export interface userGameRolesCreateInput {
-  role: Roles;
-  userId: UserCreateOneInput;
+export interface gameRoleWhereInput {
+  id?: ID_Input;
+  id_not?: ID_Input;
+  id_in?: ID_Input[] | ID_Input;
+  id_not_in?: ID_Input[] | ID_Input;
+  id_lt?: ID_Input;
+  id_lte?: ID_Input;
+  id_gt?: ID_Input;
+  id_gte?: ID_Input;
+  id_contains?: ID_Input;
+  id_not_contains?: ID_Input;
+  id_starts_with?: ID_Input;
+  id_not_starts_with?: ID_Input;
+  id_ends_with?: ID_Input;
+  id_not_ends_with?: ID_Input;
+  playerId?: UserWhereInput;
+  role?: RoleType;
+  role_not?: RoleType;
+  role_in?: RoleType[] | RoleType;
+  role_not_in?: RoleType[] | RoleType;
+  gameId?: GameWhereInput;
+  AND?: gameRoleWhereInput[] | gameRoleWhereInput;
+  OR?: gameRoleWhereInput[] | gameRoleWhereInput;
+  NOT?: gameRoleWhereInput[] | gameRoleWhereInput;
 }
 
 export interface GameScalarWhereInput {
@@ -643,6 +497,106 @@ export interface GameScalarWhereInput {
   NOT?: GameScalarWhereInput[] | GameScalarWhereInput;
 }
 
+export interface GameUpsertNestedInput {
+  update: GameUpdateDataInput;
+  create: GameCreateInput;
+}
+
+export interface UserCreateInput {
+  userName: String;
+  password: String;
+  games?: GameCreateManyInput;
+  avatar?: String;
+}
+
+export interface UserUpdateDataInput {
+  userName?: String;
+  password?: String;
+  games?: GameUpdateManyInput;
+  avatar?: String;
+}
+
+export interface GameCreateManyInput {
+  create?: GameCreateInput[] | GameCreateInput;
+  connect?: GameWhereUniqueInput[] | GameWhereUniqueInput;
+}
+
+export interface gameRoleUpdateInput {
+  playerId?: UserUpdateOneRequiredInput;
+  role?: RoleType;
+  gameId?: GameUpdateOneRequiredInput;
+}
+
+export interface GameUpdateDataInput {
+  modules?: Int;
+  modulesFailed?: Int;
+  startTime?: Int;
+  endTime?: Int;
+  strikesAllowed?: Int;
+  gameStatus?: Status;
+  needyModules?: Boolean;
+}
+
+export interface GameUpdateWithWhereUniqueNestedInput {
+  where: GameWhereUniqueInput;
+  data: GameUpdateDataInput;
+}
+
+export interface GameUpdateManyInput {
+  create?: GameCreateInput[] | GameCreateInput;
+  update?:
+    | GameUpdateWithWhereUniqueNestedInput[]
+    | GameUpdateWithWhereUniqueNestedInput;
+  upsert?:
+    | GameUpsertWithWhereUniqueNestedInput[]
+    | GameUpsertWithWhereUniqueNestedInput;
+  delete?: GameWhereUniqueInput[] | GameWhereUniqueInput;
+  connect?: GameWhereUniqueInput[] | GameWhereUniqueInput;
+  disconnect?: GameWhereUniqueInput[] | GameWhereUniqueInput;
+  deleteMany?: GameScalarWhereInput[] | GameScalarWhereInput;
+  updateMany?:
+    | GameUpdateManyWithWhereNestedInput[]
+    | GameUpdateManyWithWhereNestedInput;
+}
+
+export interface UserUpdateInput {
+  userName?: String;
+  password?: String;
+  games?: GameUpdateManyInput;
+  avatar?: String;
+}
+
+export type gameRoleWhereUniqueInput = AtLeastOne<{
+  id: ID_Input;
+}>;
+
+export interface GameSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: GameWhereInput;
+  AND?: GameSubscriptionWhereInput[] | GameSubscriptionWhereInput;
+  OR?: GameSubscriptionWhereInput[] | GameSubscriptionWhereInput;
+  NOT?: GameSubscriptionWhereInput[] | GameSubscriptionWhereInput;
+}
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface UserSubscriptionWhereInput {
+  mutation_in?: MutationType[] | MutationType;
+  updatedFields_contains?: String;
+  updatedFields_contains_every?: String[] | String;
+  updatedFields_contains_some?: String[] | String;
+  node?: UserWhereInput;
+  AND?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+  OR?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+  NOT?: UserSubscriptionWhereInput[] | UserSubscriptionWhereInput;
+}
+
 export interface GameWhereInput {
   id?: ID_Input;
   id_not?: ID_Input;
@@ -709,151 +663,24 @@ export interface GameWhereInput {
   NOT?: GameWhereInput[] | GameWhereInput;
 }
 
-export interface UserCreateInput {
-  userName: String;
-  password: String;
-  games?: GameCreateManyInput;
-  avatar?: String;
-}
-
-export type userGameRolesWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-}>;
-
-export interface GameUpdateWithWhereUniqueNestedInput {
-  where: GameWhereUniqueInput;
-  data: GameUpdateDataInput;
-}
-
-export interface GameUpdateManyInput {
-  create?: GameCreateInput[] | GameCreateInput;
-  update?:
-    | GameUpdateWithWhereUniqueNestedInput[]
-    | GameUpdateWithWhereUniqueNestedInput;
-  upsert?:
-    | GameUpsertWithWhereUniqueNestedInput[]
-    | GameUpsertWithWhereUniqueNestedInput;
-  delete?: GameWhereUniqueInput[] | GameWhereUniqueInput;
-  connect?: GameWhereUniqueInput[] | GameWhereUniqueInput;
-  disconnect?: GameWhereUniqueInput[] | GameWhereUniqueInput;
-  deleteMany?: GameScalarWhereInput[] | GameScalarWhereInput;
-  updateMany?:
-    | GameUpdateManyWithWhereNestedInput[]
-    | GameUpdateManyWithWhereNestedInput;
-}
-
-export interface GameUpsertWithWhereUniqueNestedInput {
-  where: GameWhereUniqueInput;
-  update: GameUpdateDataInput;
-  create: GameCreateInput;
-}
-
-export interface GameCreateManyInput {
-  create?: GameCreateInput[] | GameCreateInput;
-  connect?: GameWhereUniqueInput[] | GameWhereUniqueInput;
-}
-
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: ID_Input;
-  userName?: String;
-}>;
-
-export interface UserUpdateOneRequiredInput {
-  create?: UserCreateInput;
-  update?: UserUpdateDataInput;
-  upsert?: UserUpsertNestedInput;
-  connect?: UserWhereUniqueInput;
-}
-
-export interface UserUpsertNestedInput {
-  update: UserUpdateDataInput;
-  create: UserCreateInput;
-}
-
-export interface userGameRolesUpdateManyMutationInput {
-  role?: Roles;
-}
-
 export interface NodeNode {
   id: ID_Output;
 }
 
-export interface userGameRolesPreviousValues {
-  id: ID_Output;
-  role: Roles;
+export interface BatchPayload {
+  count: Long;
 }
 
-export interface userGameRolesPreviousValuesPromise
-  extends Promise<userGameRolesPreviousValues>,
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
-  role: () => Promise<Roles>;
+  count: () => Promise<Long>;
 }
 
-export interface userGameRolesPreviousValuesSubscription
-  extends Promise<AsyncIterator<userGameRolesPreviousValues>>,
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
     Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  role: () => Promise<AsyncIterator<Roles>>;
-}
-
-export interface UserEdge {
-  node: User;
-  cursor: String;
-}
-
-export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
-  node: <T = UserPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface UserEdgeSubscription
-  extends Promise<AsyncIterator<UserEdge>>,
-    Fragmentable {
-  node: <T = UserSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface GameConnection {
-  pageInfo: PageInfo;
-  edges: GameEdge[];
-}
-
-export interface GameConnectionPromise
-  extends Promise<GameConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<GameEdge>>() => T;
-  aggregate: <T = AggregateGamePromise>() => T;
-}
-
-export interface GameConnectionSubscription
-  extends Promise<AsyncIterator<GameConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<GameEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateGameSubscription>() => T;
-}
-
-export interface UserConnection {
-  pageInfo: PageInfo;
-  edges: UserEdge[];
-}
-
-export interface UserConnectionPromise
-  extends Promise<UserConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<UserEdge>>() => T;
-  aggregate: <T = AggregateUserPromise>() => T;
-}
-
-export interface UserConnectionSubscription
-  extends Promise<AsyncIterator<UserConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserSubscription>() => T;
+  count: () => Promise<AsyncIterator<Long>>;
 }
 
 export interface PageInfo {
@@ -879,340 +706,85 @@ export interface PageInfoSubscription
   endCursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface BatchPayload {
-  count: Long;
-}
-
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
-    Fragmentable {
-  count: () => Promise<Long>;
-}
-
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
-}
-
-export interface AggregateuserGameRoles {
-  count: Int;
-}
-
-export interface AggregateuserGameRolesPromise
-  extends Promise<AggregateuserGameRoles>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateuserGameRolesSubscription
-  extends Promise<AsyncIterator<AggregateuserGameRoles>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface Game {
+export interface gameRolePreviousValues {
   id: ID_Output;
-  modules?: Int;
-  modulesFailed?: Int;
-  startTime?: Int;
-  endTime?: Int;
-  strikesAllowed: Int;
-  gameStatus: Status;
-  needyModules?: Boolean;
+  role: RoleType;
 }
 
-export interface GamePromise extends Promise<Game>, Fragmentable {
+export interface gameRolePreviousValuesPromise
+  extends Promise<gameRolePreviousValues>,
+    Fragmentable {
   id: () => Promise<ID_Output>;
-  modules: () => Promise<Int>;
-  modulesFailed: () => Promise<Int>;
-  startTime: () => Promise<Int>;
-  endTime: () => Promise<Int>;
-  strikesAllowed: () => Promise<Int>;
-  gameStatus: () => Promise<Status>;
-  needyModules: () => Promise<Boolean>;
+  role: () => Promise<RoleType>;
 }
 
-export interface GameSubscription
-  extends Promise<AsyncIterator<Game>>,
+export interface gameRolePreviousValuesSubscription
+  extends Promise<AsyncIterator<gameRolePreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  modules: () => Promise<AsyncIterator<Int>>;
-  modulesFailed: () => Promise<AsyncIterator<Int>>;
-  startTime: () => Promise<AsyncIterator<Int>>;
-  endTime: () => Promise<AsyncIterator<Int>>;
-  strikesAllowed: () => Promise<AsyncIterator<Int>>;
-  gameStatus: () => Promise<AsyncIterator<Status>>;
-  needyModules: () => Promise<AsyncIterator<Boolean>>;
+  role: () => Promise<AsyncIterator<RoleType>>;
 }
 
-export interface userGameRolesConnection {
+export interface GameConnection {
   pageInfo: PageInfo;
-  edges: userGameRolesEdge[];
+  edges: GameEdge[];
 }
 
-export interface userGameRolesConnectionPromise
-  extends Promise<userGameRolesConnection>,
+export interface GameConnectionPromise
+  extends Promise<GameConnection>,
     Fragmentable {
   pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<userGameRolesEdge>>() => T;
-  aggregate: <T = AggregateuserGameRolesPromise>() => T;
+  edges: <T = FragmentableArray<GameEdge>>() => T;
+  aggregate: <T = AggregateGamePromise>() => T;
 }
 
-export interface userGameRolesConnectionSubscription
-  extends Promise<AsyncIterator<userGameRolesConnection>>,
+export interface GameConnectionSubscription
+  extends Promise<AsyncIterator<GameConnection>>,
     Fragmentable {
   pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<userGameRolesEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateuserGameRolesSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<GameEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateGameSubscription>() => T;
 }
 
-export interface userGameRolesEdge {
-  node: userGameRoles;
-  cursor: String;
-}
-
-export interface userGameRolesEdgePromise
-  extends Promise<userGameRolesEdge>,
-    Fragmentable {
-  node: <T = userGameRolesPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface userGameRolesEdgeSubscription
-  extends Promise<AsyncIterator<userGameRolesEdge>>,
-    Fragmentable {
-  node: <T = userGameRolesSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface gamePlayerRolesSubscriptionPayload {
-  mutation: MutationType;
-  node: gamePlayerRoles;
-  updatedFields: String[];
-  previousValues: gamePlayerRolesPreviousValues;
-}
-
-export interface gamePlayerRolesSubscriptionPayloadPromise
-  extends Promise<gamePlayerRolesSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = gamePlayerRolesPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = gamePlayerRolesPreviousValuesPromise>() => T;
-}
-
-export interface gamePlayerRolesSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<gamePlayerRolesSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = gamePlayerRolesSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = gamePlayerRolesPreviousValuesSubscription>() => T;
-}
-
-export interface gamePlayerRolesPreviousValues {
-  id: ID_Output;
-}
-
-export interface gamePlayerRolesPreviousValuesPromise
-  extends Promise<gamePlayerRolesPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-}
-
-export interface gamePlayerRolesPreviousValuesSubscription
-  extends Promise<AsyncIterator<gamePlayerRolesPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-}
-
-export interface GameSubscriptionPayload {
-  mutation: MutationType;
-  node: Game;
-  updatedFields: String[];
-  previousValues: GamePreviousValues;
-}
-
-export interface GameSubscriptionPayloadPromise
-  extends Promise<GameSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = GamePromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = GamePreviousValuesPromise>() => T;
-}
-
-export interface GameSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<GameSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = GameSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = GamePreviousValuesSubscription>() => T;
-}
-
-export interface userGameRoles {
-  id: ID_Output;
-  role: Roles;
-}
-
-export interface userGameRolesPromise
-  extends Promise<userGameRoles>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  role: () => Promise<Roles>;
-  userId: <T = UserPromise>() => T;
-}
-
-export interface userGameRolesSubscription
-  extends Promise<AsyncIterator<userGameRoles>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  role: () => Promise<AsyncIterator<Roles>>;
-  userId: <T = UserSubscription>() => T;
-}
-
-export interface gamePlayerRolesEdge {
-  node: gamePlayerRoles;
-  cursor: String;
-}
-
-export interface gamePlayerRolesEdgePromise
-  extends Promise<gamePlayerRolesEdge>,
-    Fragmentable {
-  node: <T = gamePlayerRolesPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface gamePlayerRolesEdgeSubscription
-  extends Promise<AsyncIterator<gamePlayerRolesEdge>>,
-    Fragmentable {
-  node: <T = gamePlayerRolesSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface GamePreviousValues {
-  id: ID_Output;
-  modules?: Int;
-  modulesFailed?: Int;
-  startTime?: Int;
-  endTime?: Int;
-  strikesAllowed: Int;
-  gameStatus: Status;
-  needyModules?: Boolean;
-}
-
-export interface GamePreviousValuesPromise
-  extends Promise<GamePreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  modules: () => Promise<Int>;
-  modulesFailed: () => Promise<Int>;
-  startTime: () => Promise<Int>;
-  endTime: () => Promise<Int>;
-  strikesAllowed: () => Promise<Int>;
-  gameStatus: () => Promise<Status>;
-  needyModules: () => Promise<Boolean>;
-}
-
-export interface GamePreviousValuesSubscription
-  extends Promise<AsyncIterator<GamePreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  modules: () => Promise<AsyncIterator<Int>>;
-  modulesFailed: () => Promise<AsyncIterator<Int>>;
-  startTime: () => Promise<AsyncIterator<Int>>;
-  endTime: () => Promise<AsyncIterator<Int>>;
-  strikesAllowed: () => Promise<AsyncIterator<Int>>;
-  gameStatus: () => Promise<AsyncIterator<Status>>;
-  needyModules: () => Promise<AsyncIterator<Boolean>>;
-}
-
-export interface gamePlayerRoles {
-  id: ID_Output;
-}
-
-export interface gamePlayerRolesPromise
-  extends Promise<gamePlayerRoles>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  gameId: <T = GamePromise>() => T;
-  playerId: <T = UserPromise>() => T;
-}
-
-export interface gamePlayerRolesSubscription
-  extends Promise<AsyncIterator<gamePlayerRoles>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  gameId: <T = GameSubscription>() => T;
-  playerId: <T = UserSubscription>() => T;
-}
-
-export interface userGameRolesSubscriptionPayload {
-  mutation: MutationType;
-  node: userGameRoles;
-  updatedFields: String[];
-  previousValues: userGameRolesPreviousValues;
-}
-
-export interface userGameRolesSubscriptionPayloadPromise
-  extends Promise<userGameRolesSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = userGameRolesPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = userGameRolesPreviousValuesPromise>() => T;
-}
-
-export interface userGameRolesSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<userGameRolesSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = userGameRolesSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = userGameRolesPreviousValuesSubscription>() => T;
-}
-
-export interface AggregateGame {
+export interface AggregategameRole {
   count: Int;
 }
 
-export interface AggregateGamePromise
-  extends Promise<AggregateGame>,
+export interface AggregategameRolePromise
+  extends Promise<AggregategameRole>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateGameSubscription
-  extends Promise<AsyncIterator<AggregateGame>>,
+export interface AggregategameRoleSubscription
+  extends Promise<AsyncIterator<AggregategameRole>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface UserPreviousValues {
-  id: ID_Output;
-  userName: String;
-  password: String;
-  avatar?: String;
+export interface gameRoleSubscriptionPayload {
+  mutation: MutationType;
+  node: gameRole;
+  updatedFields: String[];
+  previousValues: gameRolePreviousValues;
 }
 
-export interface UserPreviousValuesPromise
-  extends Promise<UserPreviousValues>,
+export interface gameRoleSubscriptionPayloadPromise
+  extends Promise<gameRoleSubscriptionPayload>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
-  userName: () => Promise<String>;
-  password: () => Promise<String>;
-  avatar: () => Promise<String>;
+  mutation: () => Promise<MutationType>;
+  node: <T = gameRolePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = gameRolePreviousValuesPromise>() => T;
 }
 
-export interface UserPreviousValuesSubscription
-  extends Promise<AsyncIterator<UserPreviousValues>>,
+export interface gameRoleSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<gameRoleSubscriptionPayload>>,
     Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  userName: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-  avatar: () => Promise<AsyncIterator<String>>;
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = gameRoleSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = gameRolePreviousValuesSubscription>() => T;
 }
 
 export interface UserSubscriptionPayload {
@@ -1238,6 +810,84 @@ export interface UserSubscriptionPayloadSubscription
   node: <T = UserSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
   previousValues: <T = UserPreviousValuesSubscription>() => T;
+}
+
+export interface gameRoleEdge {
+  node: gameRole;
+  cursor: String;
+}
+
+export interface gameRoleEdgePromise
+  extends Promise<gameRoleEdge>,
+    Fragmentable {
+  node: <T = gameRolePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface gameRoleEdgeSubscription
+  extends Promise<AsyncIterator<gameRoleEdge>>,
+    Fragmentable {
+  node: <T = gameRoleSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface gameRoleConnection {
+  pageInfo: PageInfo;
+  edges: gameRoleEdge[];
+}
+
+export interface gameRoleConnectionPromise
+  extends Promise<gameRoleConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<gameRoleEdge>>() => T;
+  aggregate: <T = AggregategameRolePromise>() => T;
+}
+
+export interface gameRoleConnectionSubscription
+  extends Promise<AsyncIterator<gameRoleConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<gameRoleEdgeSubscription>>>() => T;
+  aggregate: <T = AggregategameRoleSubscription>() => T;
+}
+
+export interface gameRole {
+  id: ID_Output;
+  role: RoleType;
+}
+
+export interface gameRolePromise extends Promise<gameRole>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  playerId: <T = UserPromise>() => T;
+  role: () => Promise<RoleType>;
+  gameId: <T = GamePromise>() => T;
+}
+
+export interface gameRoleSubscription
+  extends Promise<AsyncIterator<gameRole>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  playerId: <T = UserSubscription>() => T;
+  role: () => Promise<AsyncIterator<RoleType>>;
+  gameId: <T = GameSubscription>() => T;
+}
+
+export interface UserEdge {
+  node: User;
+  cursor: String;
+}
+
+export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
+  node: <T = UserPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface UserEdgeSubscription
+  extends Promise<AsyncIterator<UserEdge>>,
+    Fragmentable {
+  node: <T = UserSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface User {
@@ -1281,21 +931,163 @@ export interface UserSubscription
   avatar: () => Promise<AsyncIterator<String>>;
 }
 
-export interface GameEdge {
-  node: Game;
-  cursor: String;
+export interface UserPreviousValues {
+  id: ID_Output;
+  userName: String;
+  password: String;
+  avatar?: String;
 }
 
-export interface GameEdgePromise extends Promise<GameEdge>, Fragmentable {
-  node: <T = GamePromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface GameEdgeSubscription
-  extends Promise<AsyncIterator<GameEdge>>,
+export interface UserPreviousValuesPromise
+  extends Promise<UserPreviousValues>,
     Fragmentable {
+  id: () => Promise<ID_Output>;
+  userName: () => Promise<String>;
+  password: () => Promise<String>;
+  avatar: () => Promise<String>;
+}
+
+export interface UserPreviousValuesSubscription
+  extends Promise<AsyncIterator<UserPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  userName: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  avatar: () => Promise<AsyncIterator<String>>;
+}
+
+export interface GamePreviousValues {
+  id: ID_Output;
+  modules?: Int;
+  modulesFailed?: Int;
+  startTime?: Int;
+  endTime?: Int;
+  strikesAllowed: Int;
+  gameStatus: Status;
+  needyModules?: Boolean;
+}
+
+export interface GamePreviousValuesPromise
+  extends Promise<GamePreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  modules: () => Promise<Int>;
+  modulesFailed: () => Promise<Int>;
+  startTime: () => Promise<Int>;
+  endTime: () => Promise<Int>;
+  strikesAllowed: () => Promise<Int>;
+  gameStatus: () => Promise<Status>;
+  needyModules: () => Promise<Boolean>;
+}
+
+export interface GamePreviousValuesSubscription
+  extends Promise<AsyncIterator<GamePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  modules: () => Promise<AsyncIterator<Int>>;
+  modulesFailed: () => Promise<AsyncIterator<Int>>;
+  startTime: () => Promise<AsyncIterator<Int>>;
+  endTime: () => Promise<AsyncIterator<Int>>;
+  strikesAllowed: () => Promise<AsyncIterator<Int>>;
+  gameStatus: () => Promise<AsyncIterator<Status>>;
+  needyModules: () => Promise<AsyncIterator<Boolean>>;
+}
+
+export interface GameSubscriptionPayload {
+  mutation: MutationType;
+  node: Game;
+  updatedFields: String[];
+  previousValues: GamePreviousValues;
+}
+
+export interface GameSubscriptionPayloadPromise
+  extends Promise<GameSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = GamePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = GamePreviousValuesPromise>() => T;
+}
+
+export interface GameSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<GameSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
   node: <T = GameSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = GamePreviousValuesSubscription>() => T;
+}
+
+export interface Game {
+  id: ID_Output;
+  modules?: Int;
+  modulesFailed?: Int;
+  startTime?: Int;
+  endTime?: Int;
+  strikesAllowed: Int;
+  gameStatus: Status;
+  needyModules?: Boolean;
+}
+
+export interface GamePromise extends Promise<Game>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  modules: () => Promise<Int>;
+  modulesFailed: () => Promise<Int>;
+  startTime: () => Promise<Int>;
+  endTime: () => Promise<Int>;
+  strikesAllowed: () => Promise<Int>;
+  gameStatus: () => Promise<Status>;
+  needyModules: () => Promise<Boolean>;
+}
+
+export interface GameSubscription
+  extends Promise<AsyncIterator<Game>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  modules: () => Promise<AsyncIterator<Int>>;
+  modulesFailed: () => Promise<AsyncIterator<Int>>;
+  startTime: () => Promise<AsyncIterator<Int>>;
+  endTime: () => Promise<AsyncIterator<Int>>;
+  strikesAllowed: () => Promise<AsyncIterator<Int>>;
+  gameStatus: () => Promise<AsyncIterator<Status>>;
+  needyModules: () => Promise<AsyncIterator<Boolean>>;
+}
+
+export interface AggregateGame {
+  count: Int;
+}
+
+export interface AggregateGamePromise
+  extends Promise<AggregateGame>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateGameSubscription
+  extends Promise<AsyncIterator<AggregateGame>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface UserConnection {
+  pageInfo: PageInfo;
+  edges: UserEdge[];
+}
+
+export interface UserConnectionPromise
+  extends Promise<UserConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserEdge>>() => T;
+  aggregate: <T = AggregateUserPromise>() => T;
+}
+
+export interface UserConnectionSubscription
+  extends Promise<AsyncIterator<UserConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSubscription>() => T;
 }
 
 export interface AggregateUser {
@@ -1314,52 +1106,27 @@ export interface AggregateUserSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface gamePlayerRolesConnection {
-  pageInfo: PageInfo;
-  edges: gamePlayerRolesEdge[];
+export interface GameEdge {
+  node: Game;
+  cursor: String;
 }
 
-export interface gamePlayerRolesConnectionPromise
-  extends Promise<gamePlayerRolesConnection>,
+export interface GameEdgePromise extends Promise<GameEdge>, Fragmentable {
+  node: <T = GamePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface GameEdgeSubscription
+  extends Promise<AsyncIterator<GameEdge>>,
     Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<gamePlayerRolesEdge>>() => T;
-  aggregate: <T = AggregategamePlayerRolesPromise>() => T;
-}
-
-export interface gamePlayerRolesConnectionSubscription
-  extends Promise<AsyncIterator<gamePlayerRolesConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<gamePlayerRolesEdgeSubscription>>>() => T;
-  aggregate: <T = AggregategamePlayerRolesSubscription>() => T;
-}
-
-export interface AggregategamePlayerRoles {
-  count: Int;
-}
-
-export interface AggregategamePlayerRolesPromise
-  extends Promise<AggregategamePlayerRoles>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregategamePlayerRolesSubscription
-  extends Promise<AsyncIterator<AggregategamePlayerRoles>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  node: <T = GameSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 /*
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
 */
 export type String = string;
-
-/*
-The `Boolean` scalar type represents `true` or `false`.
-*/
-export type Boolean = boolean;
 
 export type Long = string;
 
@@ -1368,6 +1135,11 @@ The `ID` scalar type represents a unique identifier, often used to refetch an ob
 */
 export type ID_Input = string | number;
 export type ID_Output = string;
+
+/*
+The `Boolean` scalar type represents `true` or `false`.
+*/
+export type Boolean = boolean;
 
 /*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
@@ -1384,7 +1156,7 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "Roles",
+    name: "RoleType",
     embedded: false
   },
   {
@@ -1396,11 +1168,7 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "gamePlayerRoles",
-    embedded: false
-  },
-  {
-    name: "userGameRoles",
+    name: "gameRole",
     embedded: false
   }
 ];

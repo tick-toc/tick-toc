@@ -2,15 +2,11 @@ type AggregateGame {
   count: Int!
 }
 
-type AggregategamePlayerRoles {
+type AggregategameRole {
   count: Int!
 }
 
 type AggregateUser {
-  count: Int!
-}
-
-type AggregateuserGameRoles {
   count: Int!
 }
 
@@ -83,65 +79,86 @@ enum GameOrderByInput {
   updatedAt_DESC
 }
 
-type gamePlayerRoles {
+type GamePreviousValues {
   id: ID!
-  gameId: Game!
+  modules: Int
+  modulesFailed: Int
+  startTime: Int
+  endTime: Int
+  strikesAllowed: Int!
+  gameStatus: Status!
+  needyModules: Boolean
+}
+
+type gameRole {
+  id: ID!
   playerId: User!
+  role: RoleType!
+  gameId: Game!
 }
 
-type gamePlayerRolesConnection {
+type gameRoleConnection {
   pageInfo: PageInfo!
-  edges: [gamePlayerRolesEdge]!
-  aggregate: AggregategamePlayerRoles!
+  edges: [gameRoleEdge]!
+  aggregate: AggregategameRole!
 }
 
-input gamePlayerRolesCreateInput {
-  gameId: GameCreateOneInput!
+input gameRoleCreateInput {
   playerId: UserCreateOneInput!
+  role: RoleType!
+  gameId: GameCreateOneInput!
 }
 
-type gamePlayerRolesEdge {
-  node: gamePlayerRoles!
+type gameRoleEdge {
+  node: gameRole!
   cursor: String!
 }
 
-enum gamePlayerRolesOrderByInput {
+enum gameRoleOrderByInput {
   id_ASC
   id_DESC
+  role_ASC
+  role_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
 }
 
-type gamePlayerRolesPreviousValues {
+type gameRolePreviousValues {
   id: ID!
+  role: RoleType!
 }
 
-type gamePlayerRolesSubscriptionPayload {
+type gameRoleSubscriptionPayload {
   mutation: MutationType!
-  node: gamePlayerRoles
+  node: gameRole
   updatedFields: [String!]
-  previousValues: gamePlayerRolesPreviousValues
+  previousValues: gameRolePreviousValues
 }
 
-input gamePlayerRolesSubscriptionWhereInput {
+input gameRoleSubscriptionWhereInput {
   mutation_in: [MutationType!]
   updatedFields_contains: String
   updatedFields_contains_every: [String!]
   updatedFields_contains_some: [String!]
-  node: gamePlayerRolesWhereInput
-  AND: [gamePlayerRolesSubscriptionWhereInput!]
-  OR: [gamePlayerRolesSubscriptionWhereInput!]
-  NOT: [gamePlayerRolesSubscriptionWhereInput!]
+  node: gameRoleWhereInput
+  AND: [gameRoleSubscriptionWhereInput!]
+  OR: [gameRoleSubscriptionWhereInput!]
+  NOT: [gameRoleSubscriptionWhereInput!]
 }
 
-input gamePlayerRolesUpdateInput {
-  gameId: GameUpdateOneRequiredInput
+input gameRoleUpdateInput {
   playerId: UserUpdateOneRequiredInput
+  role: RoleType
+  gameId: GameUpdateOneRequiredInput
 }
 
-input gamePlayerRolesWhereInput {
+input gameRoleUpdateManyMutationInput {
+  role: RoleType
+}
+
+input gameRoleWhereInput {
   id: ID
   id_not: ID
   id_in: [ID!]
@@ -156,26 +173,19 @@ input gamePlayerRolesWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  gameId: GameWhereInput
   playerId: UserWhereInput
-  AND: [gamePlayerRolesWhereInput!]
-  OR: [gamePlayerRolesWhereInput!]
-  NOT: [gamePlayerRolesWhereInput!]
+  role: RoleType
+  role_not: RoleType
+  role_in: [RoleType!]
+  role_not_in: [RoleType!]
+  gameId: GameWhereInput
+  AND: [gameRoleWhereInput!]
+  OR: [gameRoleWhereInput!]
+  NOT: [gameRoleWhereInput!]
 }
 
-input gamePlayerRolesWhereUniqueInput {
+input gameRoleWhereUniqueInput {
   id: ID
-}
-
-type GamePreviousValues {
-  id: ID!
-  modules: Int
-  modulesFailed: Int
-  startTime: Int
-  endTime: Int
-  strikesAllowed: Int!
-  gameStatus: Status!
-  needyModules: Boolean
 }
 
 input GameScalarWhereInput {
@@ -426,17 +436,12 @@ type Mutation {
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   deleteUser(where: UserWhereUniqueInput!): User
   deleteManyUsers(where: UserWhereInput): BatchPayload!
-  creategamePlayerRoles(data: gamePlayerRolesCreateInput!): gamePlayerRoles!
-  updategamePlayerRoles(data: gamePlayerRolesUpdateInput!, where: gamePlayerRolesWhereUniqueInput!): gamePlayerRoles
-  upsertgamePlayerRoles(where: gamePlayerRolesWhereUniqueInput!, create: gamePlayerRolesCreateInput!, update: gamePlayerRolesUpdateInput!): gamePlayerRoles!
-  deletegamePlayerRoles(where: gamePlayerRolesWhereUniqueInput!): gamePlayerRoles
-  deleteManygamePlayerRoleses(where: gamePlayerRolesWhereInput): BatchPayload!
-  createuserGameRoles(data: userGameRolesCreateInput!): userGameRoles!
-  updateuserGameRoles(data: userGameRolesUpdateInput!, where: userGameRolesWhereUniqueInput!): userGameRoles
-  updateManyuserGameRoleses(data: userGameRolesUpdateManyMutationInput!, where: userGameRolesWhereInput): BatchPayload!
-  upsertuserGameRoles(where: userGameRolesWhereUniqueInput!, create: userGameRolesCreateInput!, update: userGameRolesUpdateInput!): userGameRoles!
-  deleteuserGameRoles(where: userGameRolesWhereUniqueInput!): userGameRoles
-  deleteManyuserGameRoleses(where: userGameRolesWhereInput): BatchPayload!
+  creategameRole(data: gameRoleCreateInput!): gameRole!
+  updategameRole(data: gameRoleUpdateInput!, where: gameRoleWhereUniqueInput!): gameRole
+  updateManygameRoles(data: gameRoleUpdateManyMutationInput!, where: gameRoleWhereInput): BatchPayload!
+  upsertgameRole(where: gameRoleWhereUniqueInput!, create: gameRoleCreateInput!, update: gameRoleUpdateInput!): gameRole!
+  deletegameRole(where: gameRoleWhereUniqueInput!): gameRole
+  deleteManygameRoles(where: gameRoleWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -463,16 +468,13 @@ type Query {
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  gamePlayerRoles(where: gamePlayerRolesWhereUniqueInput!): gamePlayerRoles
-  gamePlayerRoleses(where: gamePlayerRolesWhereInput, orderBy: gamePlayerRolesOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [gamePlayerRoles]!
-  gamePlayerRolesesConnection(where: gamePlayerRolesWhereInput, orderBy: gamePlayerRolesOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): gamePlayerRolesConnection!
-  userGameRoles(where: userGameRolesWhereUniqueInput!): userGameRoles
-  userGameRoleses(where: userGameRolesWhereInput, orderBy: userGameRolesOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [userGameRoles]!
-  userGameRolesesConnection(where: userGameRolesWhereInput, orderBy: userGameRolesOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): userGameRolesConnection!
+  gameRole(where: gameRoleWhereUniqueInput!): gameRole
+  gameRoles(where: gameRoleWhereInput, orderBy: gameRoleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [gameRole]!
+  gameRolesConnection(where: gameRoleWhereInput, orderBy: gameRoleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): gameRoleConnection!
   node(id: ID!): Node
 }
 
-enum Roles {
+enum RoleType {
   DEFUSER
   EXPERT
 }
@@ -486,8 +488,7 @@ enum Status {
 type Subscription {
   game(where: GameSubscriptionWhereInput): GameSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
-  gamePlayerRoles(where: gamePlayerRolesSubscriptionWhereInput): gamePlayerRolesSubscriptionPayload
-  userGameRoles(where: userGameRolesSubscriptionWhereInput): userGameRolesSubscriptionPayload
+  gameRole(where: gameRoleSubscriptionWhereInput): gameRoleSubscriptionPayload
 }
 
 type User {
@@ -519,100 +520,6 @@ input UserCreateOneInput {
 type UserEdge {
   node: User!
   cursor: String!
-}
-
-type userGameRoles {
-  id: ID!
-  role: Roles!
-  userId: User!
-}
-
-type userGameRolesConnection {
-  pageInfo: PageInfo!
-  edges: [userGameRolesEdge]!
-  aggregate: AggregateuserGameRoles!
-}
-
-input userGameRolesCreateInput {
-  role: Roles!
-  userId: UserCreateOneInput!
-}
-
-type userGameRolesEdge {
-  node: userGameRoles!
-  cursor: String!
-}
-
-enum userGameRolesOrderByInput {
-  id_ASC
-  id_DESC
-  role_ASC
-  role_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-}
-
-type userGameRolesPreviousValues {
-  id: ID!
-  role: Roles!
-}
-
-type userGameRolesSubscriptionPayload {
-  mutation: MutationType!
-  node: userGameRoles
-  updatedFields: [String!]
-  previousValues: userGameRolesPreviousValues
-}
-
-input userGameRolesSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: userGameRolesWhereInput
-  AND: [userGameRolesSubscriptionWhereInput!]
-  OR: [userGameRolesSubscriptionWhereInput!]
-  NOT: [userGameRolesSubscriptionWhereInput!]
-}
-
-input userGameRolesUpdateInput {
-  role: Roles
-  userId: UserUpdateOneRequiredInput
-}
-
-input userGameRolesUpdateManyMutationInput {
-  role: Roles
-}
-
-input userGameRolesWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  role: Roles
-  role_not: Roles
-  role_in: [Roles!]
-  role_not_in: [Roles!]
-  userId: UserWhereInput
-  AND: [userGameRolesWhereInput!]
-  OR: [userGameRolesWhereInput!]
-  NOT: [userGameRolesWhereInput!]
-}
-
-input userGameRolesWhereUniqueInput {
-  id: ID
 }
 
 enum UserOrderByInput {
