@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 prisma.yml
+
 # testing
 /coverage
 
