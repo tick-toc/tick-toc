@@ -6,14 +6,27 @@ type User {
   avatar: String
 }
 
+type userGameRoles {
+  id: ID! @unique
+  role: Roles!
+  userId: User!
+}
+
+type gamePlayerRoles {
+  id: ID! @unique
+  gameId: Game!
+  playerId: User!
+
+}
+
 type Game {
   id: ID! @unique
   modules: Int
   modulesFailed: Int
   startTime: Int
   endTime: Int
-  defuser: User!
-  expert: [User!]!  @length(max: 2)
+  # defuser: User @relation(name: "StoriesByUser" onDelete: CASCADE)
+  # expert: User @relation(name: "StoriesByUser" onDelete: CASCADE)
   strikesAllowed: Int!
   gameStatus: Status!
   needyModules: Boolean @default(value: "false")
@@ -23,4 +36,8 @@ enum Status {
   INPROGRESS
   COMPLETED
   FAILED
+}
+enum Roles {
+  DEFUSER
+  EXPERT
 }
