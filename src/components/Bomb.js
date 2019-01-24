@@ -163,7 +163,7 @@ class Bomb extends Component {
   render() {
     
     return (
-      <div id="bomb-box" />
+      <canvas id="bomb-box" />
     );
   }
 }
