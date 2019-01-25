@@ -11,6 +11,9 @@ class Bomb extends Component {
   componentDidMount() {
 
     var camera, scene, renderer, box, clock, mo1;
+    var targetList = [];
+    var projector, mouse = { x: 0, y: 0 };
+
 
     init();
     animate();
@@ -71,7 +74,9 @@ class Bomb extends Component {
         });
         box.traverse((o) => {
           if (o.isMesh) {
-            if (o.name === 'Cube001') o.material = material2;
+            if (o.name === 'Cube001') {
+              o.material = material2;
+            }
             else o.material = material;
           }
         });
@@ -84,6 +89,7 @@ class Bomb extends Component {
       var clockLoader = new GLTFLoader();
       clockLoader.load('models/clock.glb', function (gltf) {
         clock = gltf.scene;
+        targetList.push(clock)
         gltf.scene.scale.set(0.44, 0.44, 0.44);
         gltf.scene.position.x = 0.49;				    //Position (x = right+ left-)
         gltf.scene.position.y = -0.3;				    //Position (y = up+, down-)
@@ -100,6 +106,7 @@ class Bomb extends Component {
         });
         clock.traverse((o) => {
           if (o.isMesh) {
+            console.log('inside the traverse ', o)
             if (o.name === 'Cube001') o.material = material2;
             else o.material = material;
           }
@@ -114,6 +121,7 @@ class Bomb extends Component {
       var mo1Loader = new GLTFLoader();
       mo1Loader.load('models/mo1.glb', function (gltf) {
         mo1 = gltf.scene;
+        targetList.push(mo1)
         gltf.scene.scale.set(0.42, 0.42, 0.42);
         gltf.scene.position.x = -0.49;				    //Position (x = right+ left-)
         gltf.scene.position.y = -0.3;				    //Position (y = up+, down-)
@@ -146,7 +154,7 @@ class Bomb extends Component {
         });
         mo1.traverse((o) => {
           if (o.isMesh) {
-            console.log('mo1', o)
+            // console.log('mo1', o)
             if (o.name === 'Cube001') o.material = material2;
             else if (o.name === 'Socket001' || o.name === 'Socket') o.material = material3;
             else if (o.name === 'BezierCurve') o.material = red;
@@ -264,7 +272,40 @@ class Bomb extends Component {
       // var controls = new THREE.OrbitControls( camera, renderer.domElement );
       // controls.target.set( 0, 1, 0 );
       // controls.update();
+      document.addEventListener('mousedown', onDocumentMouseDown, false);
+
+
     }
+    function onDocumentMouseDown(event) {
+      // the following line would stop any other event handler from firing
+      // (such as the mouse's TrackballControls)
+      // event.preventDefault();
+
+      console.log("Click.");
+
+      // update the mouse variable
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+      // find intersections
+      // create a Ray with origin at the mouse position
+      //   and direction into the scene (camera direction)
+      var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
+      projector.unprojectVector(vector, camera);
+      var ray = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+      // create an array containing all objects in the scene with which the ray intersects
+      var intersects = ray.intersectObjects(targetList);
+
+      // if there is one (or more) intersections
+      if (intersects.length > 0) {
+        console.log("Hit @ " + toString(intersects[0].point));
+        // change the color of the closest face.
+        intersects[0].face.color.setRGB(0.8 * Math.random() + 0.2, 0, 0);
+        intersects[0].object.geometry.colorsNeedUpdate = true;
+      }
+    }
+
+
 
     function onWindowResize() {
 
