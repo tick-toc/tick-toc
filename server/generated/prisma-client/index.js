@@ -28,6 +28,6 @@ var models = [
 exports.Prisma = prisma_lib_1.makePrismaClientClass({
   typeDefs,
   models,
-  endpoint: `https://us1.prisma.sh/tick-toc/tick-toc/dev`
+  endpoint: `https://us1.prisma.sh/tick-toc/tick-toc-evan/dev`
 });
 exports.prisma = new exports.Prisma();

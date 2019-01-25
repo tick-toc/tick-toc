@@ -7,7 +7,7 @@ const Subscription = require('./resolvers/Subscription')
 
 
 const resolvers = {
-    // Mutation,
+    Mutation,
     Query,
     // Subscription
 }

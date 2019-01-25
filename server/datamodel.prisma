@@ -27,12 +27,12 @@ type gameRole {
 }
 type Game {
   id: ID! @unique
-  modules: Int
-  modulesFailed: Int
-  startTime: Int
+  modules: Int! @default(value: 5)
+  modulesFailed: Int! @default(value: 0)
+  startTime: Int! @default(value: 300000)
   endTime: Int
-  strikesAllowed: Int!
-  gameStatus: Status!
+  strikesAllowed: Int! @default(value: 3)
+  gameStatus: Status
   needyModules: Boolean @default(value: "false")
 }
 

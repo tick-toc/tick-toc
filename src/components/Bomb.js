@@ -169,7 +169,7 @@ class Bomb extends Component {
   render() {
 
     return (
-      <div id="bomb-box" ref={this.canvasRef} />
+      <canvas id="bomb-box" ref={this.canvasRef} />
     );
   }
 }
