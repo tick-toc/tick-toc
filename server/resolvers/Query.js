@@ -1,6 +1,6 @@
 const Query = {
     info() {
-        return 'hi'
+        return 'CLICK'
     }
 }
 
