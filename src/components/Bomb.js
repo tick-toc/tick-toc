@@ -211,6 +211,7 @@ class Bomb extends Component {
       ground.rotation.x = - Math.PI / 2; // rotates X/Y to X/Z
       ground.receiveShadow = true;
       scene.add(ground);
+      targetList.push(ground)
 
       // Renderer
       //useRef
@@ -272,6 +273,28 @@ class Bomb extends Component {
       // var controls = new THREE.OrbitControls( camera, renderer.domElement );
       // controls.target.set( 0, 1, 0 );
       // controls.update();
+
+      //////////////////////////////////////////////////////////////////////
+      // this material causes a mesh to use colors assigned to faces
+      // var faceColorMaterial = new THREE.MeshBasicMaterial(
+      //   { color: 0xffffff, vertexColors: THREE.FaceColors });
+
+      // var sphereGeometry = new THREE.SphereGeometry(10, 10, 10);
+      // for (var i = 0; i < sphereGeometry.faces.length; i++) {
+      //   let face = sphereGeometry.faces[i];
+      //   face.color.setRGB(0, 0, 0.8 * Math.random() + 0.2);
+      // }
+      // var sphere = new THREE.Mesh(sphereGeometry, faceColorMaterial);
+      // sphere.position.set(0, 0, 100);
+      // scene.add(sphere);
+
+      // targetList.push(sphere);
+
+      //////////////////////////////////////////////////////////////////////
+
+      // initialize object to perform world/screen calculations
+      projector = new THREE.Projector();
+
       document.addEventListener('mousedown', onDocumentMouseDown, false);
 
 
@@ -282,6 +305,8 @@ class Bomb extends Component {
       // event.preventDefault();
 
       console.log("Click.");
+      console.log(event)
+      console.log(event.target)
 
       // update the mouse variable
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -295,10 +320,14 @@ class Bomb extends Component {
       var ray = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
       // create an array containing all objects in the scene with which the ray intersects
       var intersects = ray.intersectObjects(targetList);
+      var clickPoint = intersects[0]
+      console.log("intersects: ", clickPoint)
 
-      // if there is one (or more) intersections
+      console.log("clickPoint", clickPoint)
+
+      // if there is one (or more) intersections  intersects[0].point
       if (intersects.length > 0) {
-        console.log("Hit @ " + toString(intersects[0].point));
+        // console.log( intersects);
         // change the color of the closest face.
         intersects[0].face.color.setRGB(0.8 * Math.random() + 0.2, 0, 0);
         intersects[0].object.geometry.colorsNeedUpdate = true;
