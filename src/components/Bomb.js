@@ -186,10 +186,6 @@ class Bomb extends Component {
           clock.add(text)
         }
       });
-
-
-
-
     
       var ground = new THREE.Mesh(
         new THREE.PlaneBufferGeometry( 9, 9, 1, 1 ),
@@ -208,6 +204,35 @@ class Bomb extends Component {
       renderer.setSize( window.innerWidth, window.innerHeight );
       window.addEventListener( 'resize', onWindowResize, false );
       container.appendChild( renderer.domElement );
+
+      // Ray Caster
+
+      // add ray caster and mouse as 2D vector
+      // const rayCaster = new THREE.Raycaster();
+      // let mouse = new THREE.Vector2()
+
+      // function onDocumentMouseDown(event) {
+      //   event.preventDefault();
+      //   mouse.x = (event.clientX / renderer.domElement.width) * 2 - 1;
+      //   mouse.y = (event.clientY / renderer.domElement.height) * 2 + 1;
+      //   rayCaster.setFromCamera( mouse, camera);
+      //   // let intersects = rayCaster.intersectObjects( objects );
+      //   let color = (Math.rando() * 0xffffff);
+
+      //   if(intersects.length > 0) {
+      //     intersects[0].object.material.color.setHex(color);
+      //     let temp = intersects[0].object.material.color.getHexString();
+      //     let name = intersects[0].object.name;
+      //     console.log("object ->", name, "color ->", temp)
+      //   }
+      // }
+
+      // add mouse events listener and callback function
+      // document.addEventListener('mousedown', onDocumentMouseDown, false)
+
+
+
+
     
       // Dragger
     
@@ -282,7 +307,7 @@ class Bomb extends Component {
   render() {
     
     return (
-      <div id="bomb-box" />
+      <div />
     );
   }
 }
