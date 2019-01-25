@@ -17,12 +17,12 @@ type BatchPayload {
 
 type Game {
   id: ID!
-  modules: Int
-  modulesFailed: Int
-  startTime: Int
+  modules: Int!
+  modulesFailed: Int!
+  startTime: Int!
   endTime: Int
   strikesAllowed: Int!
-  gameStatus: Status!
+  gameStatus: Status
   needyModules: Boolean
 }
 
@@ -37,8 +37,8 @@ input GameCreateInput {
   modulesFailed: Int
   startTime: Int
   endTime: Int
-  strikesAllowed: Int!
-  gameStatus: Status!
+  strikesAllowed: Int
+  gameStatus: Status
   needyModules: Boolean
 }
 
@@ -82,12 +82,12 @@ enum GameOrderByInput {
 
 type GamePreviousValues {
   id: ID!
-  modules: Int
-  modulesFailed: Int
-  startTime: Int
+  modules: Int!
+  modulesFailed: Int!
+  startTime: Int!
   endTime: Int
   strikesAllowed: Int!
-  gameStatus: Status!
+  gameStatus: Status
   needyModules: Boolean
 }
 

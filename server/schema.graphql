@@ -1,3 +1,10 @@
+# import * from './generated/graphql-prisma/prisma.graphql'
+
 type Query {
     info: String!
+}
+
+type Mutation {
+    createGame(gameStatus: Status, startTime: Int, modules: Int, needyModules: Boolean, stikesAllowed: Int): Game!
+    # strike(id: ID!, modulesFailed: )
 }
