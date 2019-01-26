@@ -87,10 +87,6 @@ class Bomb extends Component {
         scene.add(box);
       });
 
-      // objLoader.load('./test.obj', (object) => {
-      //   scene.add(object)
-      // })
-
       var clockLoader = new GLTFLoader();
       clockLoader.load('models/clock.glb', function (glft) {
         clock = glft.scene
@@ -157,20 +153,28 @@ class Bomb extends Component {
           color: 0x0000ff,
           shininess: 100,
         });
+        var yellow = new THREE.MeshPhongMaterial({
+          color: 0xeedd00,
+          shininess: 100,
+        });
         mo1.traverse((o) => {
           if (o.isMesh) {
+            console.log(o)
             if (o.name === 'Cube001') o.material = material2;
             else if (o.name === 'Socket') o.material = material3;
-            else if (o.name === 'Wire1') {
+            else if (o.name === 'Wire1' || o.name === 'Wire1Cut') {
               o.material = red;
               targetList.push(o)
             }
-            else if (o.name === 'Wire2') { 
+            else if (o.name === 'Wire2' || o.name === 'Wire2Cut' || o.name === 'Wire5' || o.name === 'Wire5Cut') { 
               o.material = white;
               targetList.push(o)
-            } else if (o.name === 'Wire3') {
+            } else if (o.name === 'Wire3' || o.name === 'Wire3Cut'|| o.name === 'Wire6' ||         o.name === 'Wire6Cut') {
               o.material = blue;
               targetList.push(o)
+            } else if (o.name === 'Wire4' || o.name === 'Wire4Cut') {
+            o.material = yellow;
+            targetList.push(o)
             }
             else o.material = material;
           }
@@ -206,7 +210,7 @@ class Bomb extends Component {
           text.position.y = -0.68;
           text.position.z = 0.8;
           text.rotation.y = Math.PI / 2;
-          // clock.add(text)
+          clock.add(text)
         }
       });
 
@@ -312,7 +316,7 @@ class Bomb extends Component {
       // if there is one (or more) intersections
       if (intersects.length > 0) {
         console.log('intersects', intersects[0])
-        intersects[0].object.material.color.setRGB(Math.random(),Math.random(),Math.random())
+        // intersects[0].object.material.color.setRGB(Math.random(),Math.random(),Math.random())
         mo1.remove(intersects[0].object)
       }
     }
