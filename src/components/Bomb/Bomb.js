@@ -57,6 +57,8 @@ class Bomb extends Component {
 
     init();
     animate();
+    console.log("scene: ", scene)
+    console.log("camera: ", camera)
 
     function init() {
 
@@ -174,10 +176,10 @@ class Bomb extends Component {
         let wireCase = wireCases[generateRandom(wireCases.length)]
 
         const wires = mo1.children.filter(element => element.name.includes('Wire'))
-        wires.forEach((wire,index) => {
+        wires.forEach((wire, index) => {
           wire.material = wireCase.colors[index]
           if (wireCase.correct === index) {
-            wire = {...wire, correct: true}
+            wire = { ...wire, correct: true }
           } else {
             wire = { ...wire, correct: false }
           }
@@ -194,7 +196,7 @@ class Bomb extends Component {
         let material3 = new THREE.MeshPhongMaterial({
           color: 0x444444,
           shininess: 10,
-        })        
+        })
         mo1.traverse((o) => {
           if (o.isMesh) {
             if (o.name === 'Cube001') o.material = material2
@@ -210,7 +212,7 @@ class Bomb extends Component {
       let fontLoader = new THREE.FontLoader();
       fontLoader.load('fonts/Digital-7_Regular.json', function (font) {
 
-        let textGeo = new THREE.TextGeometry('5:00', {
+        let textGeo = new THREE.TextGeometry(getTime(), {
           font: font,
           size: 12,
           height: 1,
@@ -233,7 +235,9 @@ class Bomb extends Component {
           text.position.y = -0.68;
           text.position.z = 0.8;
           text.rotation.y = Math.PI / 2;
+          text.name = "ClockDisplay"
           clock.add(text)
+          targetList.push(text)
         }
       });
 
@@ -271,7 +275,7 @@ class Bomb extends Component {
       };
 
       const toDegrees = (angle) => {
-          return angle * (180 / Math.PI);
+        return angle * (180 / Math.PI);
       };
 
       const renderArea = renderer.domElement;
@@ -316,6 +320,9 @@ class Bomb extends Component {
 
 
     }
+    function getTime() {
+      return 'this.state.timer'
+    }
     function onDocumentMouseDown(event) {
       // the following line would stop any other event handler from firing
       // (such as the mouse's TrackballControls)
@@ -335,9 +342,21 @@ class Bomb extends Component {
       var intersects = ray.intersectObjects(targetList);
       // if there is one (or more) intersections
       if (intersects.length > 0) {
-        console.log('intersects', intersects[0])
+        console.log('intersects', intersects[0].object)
         intersects[0].object.material.color.setRGB(Math.random(), Math.random(), Math.random())
         mo1.remove(intersects[0].object)
+        if (intersects[0].object.name === 'ClockDisplay') {
+          // intersects[0].object.geometry.parameters.text = '4:00'
+          console.log(intersects[0].object.geometry.parameters.text)
+
+
+
+        }
+
+        console.log(scene)
+
+
+
       }
     }
 
