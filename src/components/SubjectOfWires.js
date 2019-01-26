@@ -81,5 +81,3 @@ class SubjectOfWires extends Component {
     }
 
 }
-
-export default Bomb

@@ -244,7 +244,7 @@ class Bomb extends Component {
           text.position.y = -0.68;
           text.position.z = 0.8;
           text.rotation.y = Math.PI / 2;
-          // clock.add(text)
+          clock.add(text)
         }
       });
 
