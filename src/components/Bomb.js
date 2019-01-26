@@ -1,16 +1,58 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
+import { OBJLoader } from 'three-obj-mtl-loader'
 
 class Bomb extends Component {
   constructor(props) {
     super(props)
     this.canvasRef = React.createRef()
+    this.state = {
+      moduleOne: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleTwo: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleThree: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleFour: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleFive: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+
+      timer: 300000,
+      strikesAllowed: 3,
+      strikeCount: 0
+
+    }
+
   }
 
   componentDidMount() {
 
     var camera, scene, renderer, box, clock, mo1;
+    var targetList = [];
+    var projector, mouse = { x: 0, y: 0 };
+
 
     init();
     animate();
@@ -19,7 +61,7 @@ class Bomb extends Component {
 
       camera = new THREE.PerspectiveCamera(36, window.innerWidth / window.innerHeight, 0.25, 16);
 
-      camera.position.set(0, 1.8, 5);
+      camera.position.set(0, 1.8, 4);
 
       scene = new THREE.Scene();
 
@@ -71,7 +113,9 @@ class Bomb extends Component {
         });
         box.traverse((o) => {
           if (o.isMesh) {
-            if (o.name === 'Cube001') o.material = material2;
+            if (o.name === 'Cube001') {
+              o.material = material2;
+            }
             else o.material = material;
           }
         });
@@ -81,15 +125,19 @@ class Bomb extends Component {
         scene.add(box);
       });
 
+      // objLoader.load('./test.obj', (object) => {
+      //   scene.add(object)
+      // })
+
       var clockLoader = new GLTFLoader();
-      clockLoader.load('models/clock.glb', function (gltf) {
-        clock = gltf.scene;
-        gltf.scene.scale.set(0.44, 0.44, 0.44);
-        gltf.scene.position.x = 0.49;				    //Position (x = right+ left-)
-        gltf.scene.position.y = -0.3;				    //Position (y = up+, down-)
-        gltf.scene.position.z = -0.47;				    //Position (z = front +, back-)
-        gltf.scene.rotation.z = Math.PI / 2;
-        gltf.scene.rotation.y = - Math.PI / 2;
+      clockLoader.load('models/clock.glb', function (glft) {
+        clock = glft.scene
+        glft.scene.scale.set(0.44, 0.44, 0.44);
+        glft.scene.position.x = 0.49;				    //Position (x = right+ left-)
+        glft.scene.position.y = -0.3;				    //Position (y = up+, down-)
+        glft.scene.position.z = -0.47;				    //Position (z = front +, back-)
+        glft.scene.rotation.z = Math.PI / 2;
+        glft.scene.rotation.y = - Math.PI / 2;
         var material = new THREE.MeshPhongMaterial({
           color: 0x999999,
           shininess: 100,
@@ -101,10 +149,13 @@ class Bomb extends Component {
         clock.traverse((o) => {
           if (o.isMesh) {
             if (o.name === 'Cube001') o.material = material2;
+            else if (o.name === 'Cylinder') {
+              o.material = material
+              targetList.push(o)
+            }
             else o.material = material;
           }
         });
-
         clock.castShadow = true;
         clock.receiveShadow = true;
         box.add(clock);
@@ -146,16 +197,22 @@ class Bomb extends Component {
         });
         mo1.traverse((o) => {
           if (o.isMesh) {
-            console.log('mo1', o)
             if (o.name === 'Cube001') o.material = material2;
-            else if (o.name === 'Socket001' || o.name === 'Socket') o.material = material3;
-            else if (o.name === 'BezierCurve') o.material = red;
-            else if (o.name === 'BezierCurve002') o.material = white;
-            else if (o.name === 'BezierCurve003') o.material = blue;
+            else if (o.name === 'Socket') o.material = material3;
+            else if (o.name === 'Wire1') {
+              o.material = red;
+              targetList.push(o)
+            }
+            else if (o.name === 'Wire2') {
+              o.material = white;
+              targetList.push(o)
+            } else if (o.name === 'Wire3') {
+              o.material = blue;
+              targetList.push(o)
+            }
             else o.material = material;
           }
         });
-
         mo1.castShadow = true;
         mo1.receiveShadow = true;
         box.add(mo1);
@@ -187,7 +244,7 @@ class Bomb extends Component {
           text.position.y = -0.68;
           text.position.z = 0.8;
           text.rotation.y = Math.PI / 2;
-          clock.add(text)
+          // clock.add(text)
         }
       });
 
@@ -203,6 +260,7 @@ class Bomb extends Component {
       ground.rotation.x = - Math.PI / 2; // rotates X/Y to X/Z
       ground.receiveShadow = true;
       scene.add(ground);
+      targetList.push(ground)
 
       // Renderer
       //useRef
@@ -260,11 +318,45 @@ class Bomb extends Component {
       document.addEventListener('mouseup', (e) => {
         isDragging = false;
       });
+
+
       // Controls
       // var controls = new THREE.OrbitControls( camera, renderer.domElement );
       // controls.target.set( 0, 1, 0 );
       // controls.update();
+
+
+      projector = new THREE.Projector();
+      document.addEventListener('mousedown', onDocumentMouseDown, false);
+
+
     }
+    function onDocumentMouseDown(event) {
+      // the following line would stop any other event handler from firing
+      // (such as the mouse's TrackballControls)
+      // event.preventDefault();
+
+      // update the mouse variable
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
+      // find intersections
+      // create a Ray with origin at the mouse position
+      //   and direction into the scene (camera direction)
+      var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
+      projector.unprojectVector(vector, camera);
+      var ray = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+      // create an array containing all objects in the scene with which the ray intersects
+      var intersects = ray.intersectObjects(targetList);
+      // if there is one (or more) intersections
+      if (intersects.length > 0) {
+        console.log('intersects', intersects[0])
+        intersects[0].object.material.color.setRGB(Math.random(), Math.random(), Math.random())
+        mo1.remove(intersects[0].object)
+      }
+    }
+
+
 
     function onWindowResize() {
 
@@ -278,8 +370,6 @@ class Bomb extends Component {
     function animate() {
 
       requestAnimationFrame(animate);
-
-      // if (box) box.rotation.x += 0.005;
 
       renderer.render(scene, camera);
     }
