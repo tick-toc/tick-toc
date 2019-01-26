@@ -3,12 +3,49 @@ import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
 import { wireCountCases, wireCount } from './SubjectOfWires/SubjectOfWires'
 import { generateRandom } from '../../util'
-import {OBJLoader} from 'three-obj-mtl-loader'
 
 class Bomb extends Component {
   constructor(props) {
     super(props)
     this.canvasRef = React.createRef()
+    this.state = {
+      moduleOne: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleTwo: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleThree: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleFour: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleFive: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+
+      timer: 300000,
+      strikesAllowed: 3,
+      strikeCount: 0
+
+    }
+
   }
 
   componentDidMount() {
@@ -136,9 +173,16 @@ class Bomb extends Component {
         let wireCases = wireCountCases[count]
         let wireCase = wireCases[generateRandom(wireCases.length)]
 
-        console.log(wireCase,'<<<<')
-        // console.log(count, typeof count,'<<<COUNT')
-        // mo1.children.filter()
+        const wires = mo1.children.filter(element => element.name.includes('Wire'))
+        wires.forEach((wire,index) => {
+          wire.material = wireCase.colors[index]
+          if (wireCase.correct === index) {
+            wire = {...wire, correct: true}
+          } else {
+            wire = { ...wire, correct: false }
+          }
+        })
+        targetList.push(...wires)
         let material = new THREE.MeshPhongMaterial({
           color: 0x999999,
           shininess: 100,
@@ -153,20 +197,9 @@ class Bomb extends Component {
         })        
         mo1.traverse((o) => {
           if (o.isMesh) {
-            if (o.name === 'Cube001') o.material = material2;
-            else if (o.name === 'Socket') o.material = material3;
-            else if (o.name === 'Wire1') {
-              // o.material = red;
-              targetList.push(o)
-            }
-            else if (o.name === 'Wire2') { 
-              // o.material = white;
-              targetList.push(o)
-            } else if (o.name === 'Wire3') {
-              // o.material = blue;
-              targetList.push(o)
-            }
-            else o.material = material;
+            if (o.name === 'Cube001') o.material = material2
+            else if (o.name === 'Socket') o.material = material3
+            // else o.material = material
           }
         });
         mo1.castShadow = true;
@@ -203,6 +236,16 @@ class Bomb extends Component {
           // clock.add(text)
         }
       });
+
+      // var ground = new THREE.Mesh(
+      //   new THREE.PlaneBufferGeometry(9, 9, 1, 1),
+      //   new THREE.MeshPhongMaterial({ color: 0xa0adaf, shininess: 150 })
+      // );
+
+      // ground.rotation.x = - Math.PI / 2; // rotates X/Y to X/Z
+      // ground.receiveShadow = true;
+      // scene.add(ground);
+      // targetList.push(ground)
 
       // Renderer
       //useRef
@@ -293,7 +336,7 @@ class Bomb extends Component {
       // if there is one (or more) intersections
       if (intersects.length > 0) {
         console.log('intersects', intersects[0])
-        intersects[0].object.material.color.setRGB(Math.random(),Math.random(),Math.random())
+        intersects[0].object.material.color.setRGB(Math.random(), Math.random(), Math.random())
         mo1.remove(intersects[0].object)
       }
     }
