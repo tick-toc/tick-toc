@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
-
+import { wireCountCases, wireCount } from './SubjectOfWires/SubjectOfWires'
+import { generateRandom } from '../../util'
 class Bomb extends Component {
   constructor(props) {
     super(props)
@@ -10,7 +11,7 @@ class Bomb extends Component {
 
   componentDidMount() {
 
-    var camera, scene, renderer, box, clock, mo1;
+    let camera, scene, renderer, box, clock, mo1;
 
     init();
     animate();
@@ -27,7 +28,7 @@ class Bomb extends Component {
 
       scene.add(new THREE.AmbientLight(0x505050));
 
-      var spotLight = new THREE.SpotLight(0xffffff);
+      let spotLight = new THREE.SpotLight(0xffffff);
       spotLight.angle = Math.PI / 5;
       spotLight.penumbra = 0.2;
       spotLight.position.set(2, 3, 3);
@@ -38,7 +39,7 @@ class Bomb extends Component {
       spotLight.shadow.mapSize.height = 1024;
       scene.add(spotLight);
 
-      var dirLight = new THREE.DirectionalLight(0x55505a, 1);
+      let dirLight = new THREE.DirectionalLight(0x55505a, 1);
       dirLight.position.set(0, 3, 0);
       dirLight.castShadow = true;
       dirLight.shadow.camera.near = 1;
@@ -53,7 +54,7 @@ class Bomb extends Component {
       dirLight.shadow.mapSize.height = 1024;
       scene.add(dirLight);
 
-      var boxLoader = new GLTFLoader();
+      let boxLoader = new GLTFLoader();
       boxLoader.load('models/box.glb', function (gltf) {
         box = gltf.scene;
         gltf.scene.scale.set(1, 1, 1);
@@ -61,11 +62,11 @@ class Bomb extends Component {
         gltf.scene.position.y = 1.7;				    //Position (y = up+, down-)
         gltf.scene.position.z = 0;				    //Position (z = front +, back-)
         gltf.scene.rotation.x = Math.PI / 2;
-        var material = new THREE.MeshPhongMaterial({
+        let material = new THREE.MeshPhongMaterial({
           color: 0x11bbbb,
           shininess: 100,
         });
-        var material2 = new THREE.MeshPhongMaterial({
+        let material2 = new THREE.MeshPhongMaterial({
           color: 0x222222,
           shininess: 10,
         });
@@ -81,7 +82,7 @@ class Bomb extends Component {
         scene.add(box);
       });
 
-      var clockLoader = new GLTFLoader();
+      let clockLoader = new GLTFLoader();
       clockLoader.load('models/clock.glb', function (gltf) {
         clock = gltf.scene;
         gltf.scene.scale.set(0.44, 0.44, 0.44);
@@ -90,11 +91,11 @@ class Bomb extends Component {
         gltf.scene.position.z = -0.47;				    //Position (z = front +, back-)
         gltf.scene.rotation.z = Math.PI / 2;
         gltf.scene.rotation.y = - Math.PI / 2;
-        var material = new THREE.MeshPhongMaterial({
+        let material = new THREE.MeshPhongMaterial({
           color: 0x999999,
           shininess: 100,
         });
-        var material2 = new THREE.MeshPhongMaterial({
+        let material2 = new THREE.MeshPhongMaterial({
           color: 0x222222,
           shininess: 10,
         });
@@ -111,7 +112,7 @@ class Bomb extends Component {
       });
 
 
-      var mo1Loader = new GLTFLoader();
+      let mo1Loader = new GLTFLoader();
       mo1Loader.load('models/mo1.glb', function (gltf) {
         mo1 = gltf.scene;
         gltf.scene.scale.set(0.42, 0.42, 0.42);
@@ -120,38 +121,36 @@ class Bomb extends Component {
         gltf.scene.position.z = -0.47;				    //Position (z = front +, back-)
         gltf.scene.rotation.z = Math.PI / 2;
         gltf.scene.rotation.y = - Math.PI / 2;
-        var material = new THREE.MeshPhongMaterial({
+
+        let count = '3' // wireCount[Math.floor(Math.random() * wireCount.length)]
+        let wireCases = wireCountCases[count]
+        let wireCase = wireCases[generateRandom(wireCases.length)]
+
+        console.log(wireCase,'<<<<')
+        // console.log(count, typeof count,'<<<COUNT')
+        // mo1.children.filter()
+        let material = new THREE.MeshPhongMaterial({
           color: 0x999999,
           shininess: 100,
         });
-        var material2 = new THREE.MeshPhongMaterial({
+        let material2 = new THREE.MeshPhongMaterial({
           color: 0x222222,
           shininess: 10,
         });
-        var material3 = new THREE.MeshPhongMaterial({
+        let material3 = new THREE.MeshPhongMaterial({
           color: 0x444444,
           shininess: 10,
-        });
-        var red = new THREE.MeshPhongMaterial({
-          color: 0xff1111,
-          shininess: 100,
-        });
-        var white = new THREE.MeshPhongMaterial({
-          color: 0xffffff,
-          shininess: 100,
-        });
-        var blue = new THREE.MeshPhongMaterial({
-          color: 0x0000ff,
-          shininess: 100,
-        });
+        })        
         mo1.traverse((o) => {
           if (o.isMesh) {
-            console.log('mo1', o)
             if (o.name === 'Cube001') o.material = material2;
             else if (o.name === 'Socket001' || o.name === 'Socket') o.material = material3;
-            else if (o.name === 'BezierCurve') o.material = red;
-            else if (o.name === 'BezierCurve002') o.material = white;
-            else if (o.name === 'BezierCurve003') o.material = blue;
+            // else if (o.name === 'BezierCurve') {
+            //   o.material = red
+            //   o.visible =  false
+            // }
+            // else if (o.name === 'BezierCurve002') o.material = white;
+            // else if (o.name === 'BezierCurve003') o.material = teal;
             else o.material = material;
           }
         });
@@ -161,10 +160,10 @@ class Bomb extends Component {
         box.add(mo1);
       });
 
-      var fontLoader = new THREE.FontLoader();
+      let fontLoader = new THREE.FontLoader();
       fontLoader.load('fonts/Digital-7_Regular.json', function (font) {
 
-        var textGeo = new THREE.TextGeometry('5:00', {
+        let textGeo = new THREE.TextGeometry('5:00', {
           font: font,
           size: 12,
           height: 1,
@@ -174,14 +173,14 @@ class Bomb extends Component {
           bevelSize: 0.1,
           bevelSegments: 5
         });
-        var textMat = new THREE.MeshPhongMaterial({
+        let textMat = new THREE.MeshPhongMaterial({
           color: 0xff1111,
           shininess: 100,
         });
         if (textGeo) {
           textGeo.computeBoundingBox();
           textGeo.computeVertexNormals();
-          var text = new THREE.Mesh(textGeo, textMat)
+          let text = new THREE.Mesh(textGeo, textMat)
           text.scale.set(0.06, 0.06, 0.06);
           text.position.x = 0.16;
           text.position.y = -0.68;
@@ -191,34 +190,21 @@ class Bomb extends Component {
         }
       });
 
-
-
-
-
-      var ground = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(9, 9, 1, 1),
-        new THREE.MeshPhongMaterial({ color: 0xa0adaf, shininess: 150 })
-      );
-
-      ground.rotation.x = - Math.PI / 2; // rotates X/Y to X/Z
-      ground.receiveShadow = true;
-      scene.add(ground);
-
       // Renderer
       //useRef
-      var container = document.getElementById('bomb-box');
-      // var container = this.canvasRef
+      let container = document.getElementById('bomb-box');
+      // let container = this.canvasRef
       renderer = new THREE.WebGLRenderer();
       renderer.shadowMap.enabled = true;
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(window.innerWidth, window.innerHeight);
-      window.addEventListener('resize', onWindowResize, false);
+      // window.addEventListener('resize', onWindowResize, false);
       container.appendChild(renderer.domElement);
 
       // Dragger
 
-      var isDragging = false;
-      var previousMousePosition = {
+      let isDragging = false;
+      let previousMousePosition = {
         x: 0,
         y: 0
       };
@@ -227,9 +213,9 @@ class Bomb extends Component {
         return angle * (Math.PI / 180);
       };
 
-      // const toDegrees = (angle) => {
-      //     return angle * (180 / Math.PI);
-      // };
+      const toDegrees = (angle) => {
+          return angle * (180 / Math.PI);
+      };
 
       const renderArea = renderer.domElement;
 
@@ -238,7 +224,7 @@ class Bomb extends Component {
       });
 
       renderArea.addEventListener('mousemove', (e) => {
-        var deltaMove = {
+        let deltaMove = {
           x: e.offsetX - previousMousePosition.x,
           y: e.offsetY - previousMousePosition.y
         };
@@ -257,23 +243,23 @@ class Bomb extends Component {
         };
       });
 
-      document.addEventListener('mouseup', (e) => {
-        isDragging = false;
-      });
+      // document.addEventListener('mouseup', (e) => {
+      //   isDragging = false;
+      // });
       // Controls
-      // var controls = new THREE.OrbitControls( camera, renderer.domElement );
+      // let controls = new THREE.OrbitControls( camera, renderer.domElement );
       // controls.target.set( 0, 1, 0 );
       // controls.update();
     }
 
-    function onWindowResize() {
+    // function onWindowResize() {
 
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+    //   camera.aspect = window.innerWidth / window.innerHeight;
+    //   camera.updateProjectionMatrix();
 
-      renderer.setSize(window.innerWidth, window.innerHeight);
+    //   renderer.setSize(window.innerWidth, window.innerHeight);
 
-    }
+    // }
 
     function animate() {
 
