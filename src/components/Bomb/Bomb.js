@@ -42,14 +42,16 @@ class Bomb extends Component {
 
       timer: 300000,
       strikesAllowed: 3,
-      strikeCount: 0
-
+      strikeCount: 0,
+      box: {},
+      clockTime: {},
+      module1: {}
     }
   }
 
   componentDidMount() {
 
-    var camera, scene, renderer, box, clock, mo1;
+    var camera, scene, renderer, box, clock, module1;
     var targetList = [];
     var projector, mouse = { x: 0, y: 0 };
 
@@ -121,6 +123,7 @@ class Bomb extends Component {
 
         box.castShadow = true;
         box.receiveShadow = true;
+        THIS.setState({box})
         scene.add(box);
       });
 
@@ -153,12 +156,13 @@ class Bomb extends Component {
         });
         clock.castShadow = true;
         clock.receiveShadow = true;
+        // THIS.setState({ clock })
         box.add(clock);
       });
 
-      let mo1Loader = new GLTFLoader();
-      mo1Loader.load('models/mo1.glb', function (gltf) {
-        mo1 = gltf.scene;
+      let module1Loader = new GLTFLoader();
+      module1Loader.load('models/mo1.glb', function (gltf) {
+        module1 = gltf.scene;
         gltf.scene.scale.set(0.42, 0.42, 0.42);
         gltf.scene.position.x = -0.49;				    //Position (x = right+ left-)
         gltf.scene.position.y = -0.3;				    //Position (y = up+, down-)
@@ -169,7 +173,7 @@ class Bomb extends Component {
         let count = '3' // SOW.wireCount[Math.floor(Math.random() * wireCount.length)]
         let wireCases = SOW.wireCountCases[count]
         let wireCase = wireCases[generateRandom(wireCases.length)]
-        let wires = mo1.children.filter(element => element.name.includes('Wire'))
+        let wires = module1.children.filter(element => element.name.includes('Wire'))
 
         wires.forEach((wire,index) => {
           wire.material = wireCase.colors[index]
@@ -181,7 +185,7 @@ class Bomb extends Component {
           targetList.push(wire)
         })
 
-        mo1.traverse((o) => {
+        module1.traverse((o) => {
           if (o.isMesh) {
             if (o.name === 'Cube001') o.material = SOW.cubeMaterial
             else if (o.name === 'Socket') o.material = SOW.socketMaterial
@@ -189,9 +193,10 @@ class Bomb extends Component {
           }
         });
 
-        mo1.castShadow = true;
-        mo1.receiveShadow = true;
-        box.add(mo1);
+        module1.castShadow = true;
+        module1.receiveShadow = true;
+        THIS.setState({ module1 })
+        box.add(module1);
       });
 
       let fontLoader = new THREE.FontLoader();
@@ -220,22 +225,13 @@ class Bomb extends Component {
           text.position.y = -0.68;
           text.position.z = 0.8;
           text.rotation.y = Math.PI / 2;
-          // clock.add(text)
+          THIS.setState({ clockTime: text })
+          clock.add(text)
         }
       });
 
-      // var ground = new THREE.Mesh(
-      //   new THREE.PlaneBufferGeometry(9, 9, 1, 1),
-      //   new THREE.MeshPhongMaterial({ color: 0xa0adaf, shininess: 150 })
-      // );
-
-      // ground.rotation.x = - Math.PI / 2; // rotates X/Y to X/Z
-      // ground.receiveShadow = true;
-      // scene.add(ground);
-      // targetList.push(ground)
-
       // Renderer
-      //useRef
+
       let container = document.getElementById('bomb-box');
       // let container = this.canvasRef
       renderer = new THREE.WebGLRenderer();
@@ -291,13 +287,6 @@ class Bomb extends Component {
         isDragging = false;
       });
 
-
-      // Controls
-      // let controls = new THREE.OrbitControls( camera, renderer.domElement );
-      // controls.target.set( 0, 1, 0 );
-      // controls.update();
-
-
       projector = new THREE.Projector();
       document.addEventListener('mousedown', (e => {onDocumentMouseDown(e,THIS)}), false);
 
@@ -323,7 +312,7 @@ class Bomb extends Component {
       // if there is one (or more) intersections
       if (intersects.length > 0) {
         THIS.handleSOW(intersects[0].object.userData)
-        mo1.remove(intersects[0].object)
+        module1.remove(intersects[0].object)
       }
     }
 
