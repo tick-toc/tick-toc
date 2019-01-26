@@ -7,6 +7,44 @@ class Bomb extends Component {
   constructor(props) {
     super(props)
     this.canvasRef = React.createRef()
+    this.state = {
+      moduleOne: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleTwo: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleThree: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleFour: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+      moduleFive: {
+        inactive: true,
+        active: false,
+        pass: false,
+        fail: false
+      },
+
+      timer: 300000,
+      strikesAllowed: 3,
+      strikeCount: 0
+
+    }
+
   }
 
   componentDidMount() {
