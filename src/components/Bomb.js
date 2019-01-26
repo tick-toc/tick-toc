@@ -160,15 +160,15 @@ class Bomb extends Component {
         mo1.traverse((o) => {
           if (o.isMesh) {
             if (o.name === 'Cube001') o.material = material2;
-            else if (o.name === 'Socket001' || o.name === 'Socket') o.material = material3;
-            else if (o.name === 'BezierCurve') {
+            else if (o.name === 'Socket') o.material = material3;
+            else if (o.name === 'Wire1') {
               o.material = red;
               targetList.push(o)
             }
-            else if (o.name === 'BezierCurve002') {
+            else if (o.name === 'Wire2') {
               o.material = white;
               targetList.push(o)
-            } else if (o.name === 'BezierCurve003') {
+            } else if (o.name === 'Wire3') {
               o.material = blue;
               targetList.push(o)
             }
@@ -298,8 +298,6 @@ class Bomb extends Component {
       // (such as the mouse's TrackballControls)
       // event.preventDefault();
 
-      // console.log("Click.", targetList);
-
       // update the mouse variable
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
@@ -312,21 +310,11 @@ class Bomb extends Component {
       var ray = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
       // create an array containing all objects in the scene with which the ray intersects
       var intersects = ray.intersectObjects(targetList);
-      console.log('314: ', intersects);
       // if there is one (or more) intersections
       if (intersects.length > 0) {
-        console.log(intersects[0])
-        // console.log('inside: ', intersects[0].object.material);
-        // change the color of the closest face.
-        // intersects[0].object.setRGB(0.8 * Math.random() + 0.2, 0, 0);
-        intersects[0].object.material.color.setRGB(0, 1, 0)
-        scene.remove(box)
-        // intersects[0].object = {}
-        // intersects[0].geometry.dispose();
-        // intersects[0].material.dispose();
-        // intersects[0] = undefined;
-        // intersects[0].object.geometry.colorsNeedUpdate = true;
-        // console.log('inside: ', intersects[0].face);
+        console.log('intersects', intersects[0])
+        intersects[0].object.material.color.setRGB(Math.random(), Math.random(), Math.random())
+        mo1.remove(intersects[0].object)
       }
     }
 
@@ -344,8 +332,6 @@ class Bomb extends Component {
     function animate() {
 
       requestAnimationFrame(animate);
-
-      // if (box) box.rotation.x += 0.005;
 
       renderer.render(scene, camera);
     }
