@@ -345,13 +345,7 @@ class Bomb extends Component {
         console.log('intersects', intersects[0].object)
         intersects[0].object.material.color.setRGB(Math.random(), Math.random(), Math.random())
         mo1.remove(intersects[0].object)
-        if (intersects[0].object.name === 'ClockDisplay') {
-          // intersects[0].object.geometry.parameters.text = '4:00'
-          console.log(intersects[0].object.geometry.parameters.text)
 
-
-
-        }
 
         console.log(scene)
 
