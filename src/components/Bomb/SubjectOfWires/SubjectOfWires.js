@@ -29,6 +29,19 @@ const yellow = new MeshPhongMaterial({
   shininess: 100
 })
 
+export const defaultMaterial = new MeshPhongMaterial({
+  color: 0x999999,
+  shininess: 100,
+});
+export const cubeMaterial = new MeshPhongMaterial({
+  color: 0x222222,
+  shininess: 10,
+});
+export const socketMaterial = new MeshPhongMaterial({
+  color: 0x444444,
+  shininess: 10,
+})  
+
 /*******************
 LOGIC
 *******************/

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
-import { wireCountCases, wireCount } from './SubjectOfWires/SubjectOfWires'
+import * as SOW from './SubjectOfWires/SubjectOfWires'
 import { generateRandom } from '../../util'
 
 class Bomb extends Component {
@@ -9,35 +9,35 @@ class Bomb extends Component {
     super(props)
     this.canvasRef = React.createRef()
     this.state = {
-      moduleOne: {
+      SubjectOfWires: {
         inactive: true,
         active: false,
-        pass: false,
-        fail: false
+        passed: false,
+        failed: false,
       },
       moduleTwo: {
         inactive: true,
         active: false,
-        pass: false,
-        fail: false
+        passed: false,
+        failed: false
       },
       moduleThree: {
         inactive: true,
         active: false,
-        pass: false,
-        fail: false
+        passed: false,
+        failed: false
       },
       moduleFour: {
         inactive: true,
         active: false,
-        pass: false,
-        fail: false
+        passed: false,
+        failed: false
       },
       moduleFive: {
         inactive: true,
         active: false,
-        pass: false,
-        fail: false
+        passed: false,
+        failed: false
       },
 
       timer: 300000,
@@ -45,7 +45,6 @@ class Bomb extends Component {
       strikeCount: 0
 
     }
-
   }
 
   componentDidMount() {
@@ -54,11 +53,10 @@ class Bomb extends Component {
     var targetList = [];
     var projector, mouse = { x: 0, y: 0 };
 
-
-    init();
+    init(this);
     animate();
 
-    function init() {
+    function init(THIS) {
 
       camera = new THREE.PerspectiveCamera(36, window.innerWidth / window.innerHeight, 0.25, 16);
 
@@ -158,7 +156,6 @@ class Bomb extends Component {
         box.add(clock);
       });
 
-
       let mo1Loader = new GLTFLoader();
       mo1Loader.load('models/mo1.glb', function (gltf) {
         mo1 = gltf.scene;
@@ -169,39 +166,29 @@ class Bomb extends Component {
         gltf.scene.rotation.z = Math.PI / 2;
         gltf.scene.rotation.y = - Math.PI / 2;
 
-        let count = '3' // wireCount[Math.floor(Math.random() * wireCount.length)]
-        let wireCases = wireCountCases[count]
+        let count = '3' // SOW.wireCount[Math.floor(Math.random() * wireCount.length)]
+        let wireCases = SOW.wireCountCases[count]
         let wireCase = wireCases[generateRandom(wireCases.length)]
+        let wires = mo1.children.filter(element => element.name.includes('Wire'))
 
-        const wires = mo1.children.filter(element => element.name.includes('Wire'))
         wires.forEach((wire,index) => {
           wire.material = wireCase.colors[index]
           if (wireCase.correct === index) {
-            wire = {...wire, correct: true}
+            wire.userData = {correct: true }
           } else {
-            wire = { ...wire, correct: false }
+            wire.userData = { correct: false }
           }
+          targetList.push(wire)
         })
-        targetList.push(...wires)
-        let material = new THREE.MeshPhongMaterial({
-          color: 0x999999,
-          shininess: 100,
-        });
-        let material2 = new THREE.MeshPhongMaterial({
-          color: 0x222222,
-          shininess: 10,
-        });
-        let material3 = new THREE.MeshPhongMaterial({
-          color: 0x444444,
-          shininess: 10,
-        })        
+
         mo1.traverse((o) => {
           if (o.isMesh) {
-            if (o.name === 'Cube001') o.material = material2
-            else if (o.name === 'Socket') o.material = material3
-            // else o.material = material
+            if (o.name === 'Cube001') o.material = SOW.cubeMaterial
+            else if (o.name === 'Socket') o.material = SOW.socketMaterial
+            else if (!o.name.includes('Wire')) o.material = SOW.defaultMaterial
           }
         });
+
         mo1.castShadow = true;
         mo1.receiveShadow = true;
         box.add(mo1);
@@ -255,7 +242,7 @@ class Bomb extends Component {
       renderer.shadowMap.enabled = true;
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(window.innerWidth, window.innerHeight);
-      // window.addEventListener('resize', onWindowResize, false);
+      window.addEventListener('resize', onWindowResize, false);
       container.appendChild(renderer.domElement);
 
       // Dragger
@@ -312,11 +299,11 @@ class Bomb extends Component {
 
 
       projector = new THREE.Projector();
-      document.addEventListener('mousedown', onDocumentMouseDown, false);
-
+      document.addEventListener('mousedown', (e => {onDocumentMouseDown(e,THIS)}), false);
 
     }
-    function onDocumentMouseDown(event) {
+
+    function onDocumentMouseDown(event, THIS) {
       // the following line would stop any other event handler from firing
       // (such as the mouse's TrackballControls)
       // event.preventDefault();
@@ -335,28 +322,40 @@ class Bomb extends Component {
       var intersects = ray.intersectObjects(targetList);
       // if there is one (or more) intersections
       if (intersects.length > 0) {
-        console.log('intersects', intersects[0])
-        intersects[0].object.material.color.setRGB(Math.random(), Math.random(), Math.random())
+        THIS.handleSOW(intersects[0].object.userData)
         mo1.remove(intersects[0].object)
       }
     }
 
+    function onWindowResize() {
 
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
 
-    // function onWindowResize() {
+      renderer.setSize(window.innerWidth, window.innerHeight);
 
-    //   camera.aspect = window.innerWidth / window.innerHeight;
-    //   camera.updateProjectionMatrix();
-
-    //   renderer.setSize(window.innerWidth, window.innerHeight);
-
-    // }
+    }
 
     function animate() {
 
       requestAnimationFrame(animate);
 
       renderer.render(scene, camera);
+    }
+  }
+
+  handleSOW = wire => {
+    if (wire.correct === true) {
+      this.setState(({ SubjectOfWires }) => ({
+        SubjectOfWires: {
+          ...SubjectOfWires,
+          passed: !SubjectOfWires.passed
+        }
+      }))
+    } else {
+      this.setState(({ strikeCount }) => ({
+        strikeCount: strikeCount + 1
+      }))
     }
   }
 
