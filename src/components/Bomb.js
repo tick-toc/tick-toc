@@ -104,12 +104,16 @@ class Bomb extends Component {
           color: 0x222222,
           shininess: 10,
         });
+        var red = new THREE.MeshPhongMaterial({
+          color: 0xff1111,
+          shininess: 100,
+        });
         clock.traverse((o) => {
           if (o.isMesh) {
             if (o.name === 'Cube001') o.material = material2;
-            else if (o.name === 'Cylinder') {
-              o.material = material
-              targetList.push(o)
+            else if (o.name === 'Strike1' || o.name === 'Strike2') {
+              o.material = red
+              o.visible = false;
             }
             else o.material = material;
           }
@@ -157,9 +161,12 @@ class Bomb extends Component {
           color: 0xeedd00,
           shininess: 100,
         });
+        var grey = new THREE.MeshPhongMaterial({
+          color: 0x333333,
+          shininess: 100,
+        });
         mo1.traverse((o) => {
           if (o.isMesh) {
-            console.log(o)
             if (o.name === 'Cube001') o.material = material2;
             else if (o.name === 'Socket') o.material = material3;
             else if (o.name === 'Wire1' || o.name === 'Wire1Cut') {
@@ -175,7 +182,10 @@ class Bomb extends Component {
             } else if (o.name === 'Wire4' || o.name === 'Wire4Cut') {
             o.material = yellow;
             targetList.push(o)
-            }
+            } else if (o.name === 'LED') {
+              o.material = grey;
+              targetList.push(o)
+              }
             else o.material = material;
           }
         });
@@ -213,19 +223,6 @@ class Bomb extends Component {
           clock.add(text)
         }
       });
-
-
-
-
-
-      var ground = new THREE.Mesh(
-        new THREE.PlaneBufferGeometry(9, 9, 1, 1),
-        new THREE.MeshPhongMaterial({ color: 0xa0adaf, shininess: 150 })
-      );
-
-      ground.rotation.x = - Math.PI / 2; // rotates X/Y to X/Z
-      ground.receiveShadow = true;
-      scene.add(ground);
 
       // Renderer
       //useRef
@@ -314,10 +311,16 @@ class Bomb extends Component {
       // create an array containing all objects in the scene with which the ray intersects
       var intersects = ray.intersectObjects(targetList);
       // if there is one (or more) intersections
+      
       if (intersects.length > 0) {
-        console.log('intersects', intersects[0])
-        // intersects[0].object.material.color.setRGB(Math.random(),Math.random(),Math.random())
         mo1.remove(intersects[0].object)
+        if (intersects[0].object.name === 'Wire4') {
+          mo1.children.filter(a => a.name === "LED")[0].material.color.setRGB(0,1,0)
+        } else {
+          if (clock.children.filter( a => a.name === 'Strike1')[0].visible) clock.children.filter( a => a.name === 'Strike2')[0].visible = true
+          else clock.children.filter( a => a.name === 'Strike1')[0].visible = true
+
+        }
       }
     }
 
