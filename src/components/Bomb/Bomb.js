@@ -352,8 +352,12 @@ class Bomb extends Component {
   }
 
   componentDidUpdate(prevProps,prevState) {
-    if (prevState.strikeCount < this.state.strikeCount) {
-      console.log("STRIKE")
+    if (prevState.SubjectOfWires.passed !== this.state.SubjectOfWires.passed) {
+      const LED = this.state.module1.children.find(child => child.name === 'LED')
+      LED.material = new THREE.MeshPhongMaterial({
+        color: 0x22FF22,
+        shininess: 10,
+      });
     }
 
   }
