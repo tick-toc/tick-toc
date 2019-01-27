@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
-import * as SOW from './SubjectOfWires/SubjectOfWires'
+import * as SOW from './subjectofwires/subjectofwires'
 import { generateRandom } from '../../util'
 
 class Bomb extends Component {
@@ -169,15 +169,32 @@ class Bomb extends Component {
         gltf.scene.position.z = -0.47;				    //Position (z = front +, back-)
         gltf.scene.rotation.z = Math.PI / 2;
         gltf.scene.rotation.y = - Math.PI / 2;
-<<<<<<< HEAD:src/components/Bomb/Bomb.js
 
-        let count = '3' // SOW.wireCount[Math.floor(Math.random() * wireCount.length)]
+        let count = 3 // parseInt(SOW.wireCount[Math.floor(Math.random() * wireCount.length)])
         let wireCases = SOW.wireCountCases[count]
         let wireCase = wireCases[generateRandom(wireCases.length)]
-        let wires = module1.children.filter(element => element.name.includes('Wire'))
+        let wires = module1.children.filter(element => element.name.startsWith('Wire'))
+        let uncutWires = wires.filter(wire => !wire.name.endsWith('Cut')).sort((a, b) => {
+          if (a.name < b.name) return -1
+          else if (a.name > b.name) return 1
+          else return 0
+        })
+        let cutWires = wires.filter(wire => wire.name.endsWith('Cut')).sort((a,b) => {
+          if (a.name < b.name) return -1
+          else if (a.name > b.name) return 1
+          else return 0
+        })
+        while (cutWires.length > count) {
+          let wireIndex = generateRandom(cutWires.length)
+          module1.remove(cutWires[wireIndex])
+          module1.remove(uncutWires[wireIndex])
+          cutWires = cutWires.filter((wire,index) => index !== wireIndex)
+          uncutWires = uncutWires.filter((wire,index) => index !== wireIndex)
+        }
 
-        wires.forEach((wire,index) => {
+        uncutWires.forEach((wire,index) => {
           wire.material = wireCase.colors[index]
+          cutWires[index].material = wireCase.colors[index] 
           if (wireCase.correct === index) {
             wire.userData = {correct: true }
           } else {
@@ -191,56 +208,6 @@ class Bomb extends Component {
             if (o.name === 'Cube001') o.material = SOW.cubeMaterial
             else if (o.name === 'Socket') o.material = SOW.socketMaterial
             else if (!o.name.includes('Wire')) o.material = SOW.defaultMaterial
-=======
-        var material = new THREE.MeshPhongMaterial({
-          color: 0x999999,
-          shininess: 100,
-        });
-        var material2 = new THREE.MeshPhongMaterial({
-          color: 0x222222,
-          shininess: 10,
-        });
-        var material3 = new THREE.MeshPhongMaterial({
-          color: 0x444444,
-          shininess: 10,
-        });
-        var red = new THREE.MeshPhongMaterial({
-          color: 0xff1111,
-          shininess: 100,
-        });
-        var white = new THREE.MeshPhongMaterial({
-          color: 0xffffff,
-          shininess: 100,
-        });
-        var blue = new THREE.MeshPhongMaterial({
-          color: 0x0000ff,
-          shininess: 100,
-        });
-        var yellow = new THREE.MeshPhongMaterial({
-          color: 0xeedd00,
-          shininess: 100,
-        });
-        mo1.traverse((o) => {
-          if (o.isMesh) {
-            console.log(o)
-            if (o.name === 'Cube001') o.material = material2;
-            else if (o.name === 'Socket') o.material = material3;
-            else if (o.name === 'Wire1' || o.name === 'Wire1Cut') {
-              o.material = red;
-              targetList.push(o)
-            }
-            else if (o.name === 'Wire2' || o.name === 'Wire2Cut' || o.name === 'Wire5' || o.name === 'Wire5Cut') { 
-              o.material = white;
-              targetList.push(o)
-            } else if (o.name === 'Wire3' || o.name === 'Wire3Cut'|| o.name === 'Wire6' ||         o.name === 'Wire6Cut') {
-              o.material = blue;
-              targetList.push(o)
-            } else if (o.name === 'Wire4' || o.name === 'Wire4Cut') {
-            o.material = yellow;
-            targetList.push(o)
-            }
-            else o.material = material;
->>>>>>> e37fc7c1b13f932ae7441a00d375500db4beac16:src/components/Bomb.js
           }
         });
 
@@ -276,11 +243,8 @@ class Bomb extends Component {
           text.position.y = -0.68;
           text.position.z = 0.8;
           text.rotation.y = Math.PI / 2;
-<<<<<<< HEAD:src/components/Bomb/Bomb.js
           THIS.setState({ clockTime: text })
-=======
->>>>>>> e37fc7c1b13f932ae7441a00d375500db4beac16:src/components/Bomb.js
-          clock.add(text)
+          // clock.add(text)
         }
       });
 
@@ -365,14 +329,8 @@ class Bomb extends Component {
       var intersects = ray.intersectObjects(targetList);
       // if there is one (or more) intersections
       if (intersects.length > 0) {
-<<<<<<< HEAD:src/components/Bomb/Bomb.js
         THIS.handleSOW(intersects[0].object.userData)
         module1.remove(intersects[0].object)
-=======
-        console.log('intersects', intersects[0])
-        // intersects[0].object.material.color.setRGB(Math.random(),Math.random(),Math.random())
-        mo1.remove(intersects[0].object)
->>>>>>> e37fc7c1b13f932ae7441a00d375500db4beac16:src/components/Bomb.js
       }
     }
 
@@ -391,6 +349,13 @@ class Bomb extends Component {
 
       renderer.render(scene, camera);
     }
+  }
+
+  componentDidUpdate(prevProps,prevState) {
+    if (prevState.strikeCount < this.state.strikeCount) {
+      console.log("STRIKE")
+    }
+
   }
 
   handleSOW = wire => {
