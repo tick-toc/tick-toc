@@ -42,14 +42,16 @@ class Bomb extends Component {
 
       timer: 300000,
       strikesAllowed: 3,
-      strikeCount: 0
-
+      strikeCount: 0,
+      box: {},
+      clockTime: {},
+      module1: {}
     }
   }
 
   componentDidMount() {
 
-    var camera, scene, renderer, box, clock, mo1;
+    var camera, scene, renderer, box, clock, module1;
     var targetList = [];
     var projector, mouse = { x: 0, y: 0 };
 
@@ -121,6 +123,7 @@ class Bomb extends Component {
 
         box.castShadow = true;
         box.receiveShadow = true;
+        THIS.setState({box})
         scene.add(box);
       });
 
@@ -137,7 +140,7 @@ class Bomb extends Component {
           color: 0x999999,
           shininess: 100,
         });
-        let material2 = new THREE.MeshPhongMaterial({
+        var material2 = new THREE.MeshPhongMaterial({
           color: 0x222222,
           shininess: 10,
         });
@@ -153,12 +156,13 @@ class Bomb extends Component {
         });
         clock.castShadow = true;
         clock.receiveShadow = true;
+        THIS.setState({ clock })
         box.add(clock);
       });
 
-      let mo1Loader = new GLTFLoader();
-      mo1Loader.load('models/mo1.glb', function (gltf) {
-        mo1 = gltf.scene;
+      let module1Loader = new GLTFLoader();
+      module1Loader.load('models/mo1.glb', function (gltf) {
+        module1 = gltf.scene;
         gltf.scene.scale.set(0.42, 0.42, 0.42);
         gltf.scene.position.x = -0.49;				    //Position (x = right+ left-)
         gltf.scene.position.y = -0.3;				    //Position (y = up+, down-)
@@ -166,13 +170,31 @@ class Bomb extends Component {
         gltf.scene.rotation.z = Math.PI / 2;
         gltf.scene.rotation.y = - Math.PI / 2;
 
-        let count = '3' // SOW.wireCount[Math.floor(Math.random() * wireCount.length)]
+        let count = 3 // parseInt(SOW.wireCount[Math.floor(Math.random() * wireCount.length)])
         let wireCases = SOW.wireCountCases[count]
         let wireCase = wireCases[generateRandom(wireCases.length)]
-        let wires = mo1.children.filter(element => element.name.includes('Wire'))
+        let wires = module1.children.filter(element => element.name.startsWith('Wire'))
+        let uncutWires = wires.filter(wire => !wire.name.endsWith('Cut')).sort((a, b) => {
+          if (a.name < b.name) return -1
+          else if (a.name > b.name) return 1
+          else return 0
+        })
+        let cutWires = wires.filter(wire => wire.name.endsWith('Cut')).sort((a,b) => {
+          if (a.name < b.name) return -1
+          else if (a.name > b.name) return 1
+          else return 0
+        })
+        while (cutWires.length > count) {
+          let wireIndex = generateRandom(cutWires.length)
+          module1.remove(cutWires[wireIndex])
+          module1.remove(uncutWires[wireIndex])
+          cutWires = cutWires.filter((wire,index) => index !== wireIndex)
+          uncutWires = uncutWires.filter((wire,index) => index !== wireIndex)
+        }
 
-        wires.forEach((wire,index) => {
+        uncutWires.forEach((wire,index) => {
           wire.material = wireCase.colors[index]
+          cutWires[index].material = wireCase.colors[index] 
           if (wireCase.correct === index) {
             wire.userData = {correct: true }
           } else {
@@ -181,7 +203,7 @@ class Bomb extends Component {
           targetList.push(wire)
         })
 
-        mo1.traverse((o) => {
+        module1.traverse((o) => {
           if (o.isMesh) {
             if (o.name === 'Cube001') o.material = SOW.cubeMaterial
             else if (o.name === 'Socket') o.material = SOW.socketMaterial
@@ -189,9 +211,10 @@ class Bomb extends Component {
           }
         });
 
-        mo1.castShadow = true;
-        mo1.receiveShadow = true;
-        box.add(mo1);
+        module1.castShadow = true;
+        module1.receiveShadow = true;
+        THIS.setState({ module1 })
+        box.add(module1);
       });
 
       let fontLoader = new THREE.FontLoader();
@@ -220,22 +243,13 @@ class Bomb extends Component {
           text.position.y = -0.68;
           text.position.z = 0.8;
           text.rotation.y = Math.PI / 2;
+          THIS.setState({ clockTime: text })
           // clock.add(text)
         }
       });
 
-      // var ground = new THREE.Mesh(
-      //   new THREE.PlaneBufferGeometry(9, 9, 1, 1),
-      //   new THREE.MeshPhongMaterial({ color: 0xa0adaf, shininess: 150 })
-      // );
-
-      // ground.rotation.x = - Math.PI / 2; // rotates X/Y to X/Z
-      // ground.receiveShadow = true;
-      // scene.add(ground);
-      // targetList.push(ground)
-
       // Renderer
-      //useRef
+
       let container = document.getElementById('bomb-box');
       // let container = this.canvasRef
       renderer = new THREE.WebGLRenderer();
@@ -291,13 +305,6 @@ class Bomb extends Component {
         isDragging = false;
       });
 
-
-      // Controls
-      // let controls = new THREE.OrbitControls( camera, renderer.domElement );
-      // controls.target.set( 0, 1, 0 );
-      // controls.update();
-
-
       projector = new THREE.Projector();
       document.addEventListener('mousedown', (e => {onDocumentMouseDown(e,THIS)}), false);
 
@@ -323,7 +330,7 @@ class Bomb extends Component {
       // if there is one (or more) intersections
       if (intersects.length > 0) {
         THIS.handleSOW(intersects[0].object.userData)
-        mo1.remove(intersects[0].object)
+        module1.remove(intersects[0].object)
       }
     }
 
@@ -342,6 +349,26 @@ class Bomb extends Component {
 
       renderer.render(scene, camera);
     }
+  }
+
+  componentDidUpdate(prevProps,prevState) {
+    if (this.state.strikeCount === 1) {
+      const Strike1 = this.state.clock.children.find(child => child.name === 'Strike1')
+      Strike1.material = new THREE.MeshPhongMaterial({
+        color: 0xFF0000,
+        shininess: 10,
+      })
+    // make a util for strike material and a helper function for getting and setting a strike
+    } else if (this.state)
+    if (prevState.SubjectOfWires.passed !== this.state.SubjectOfWires.passed) {
+      // helperfunction and util for LED; pass in the module and turn on its LED
+      const LED = this.state.module1.children.find(child => child.name === 'LED')
+      LED.material = new THREE.MeshPhongMaterial({
+        color: 0x22FF22,
+        shininess: 10,
+      })
+    }
+
   }
 
   handleSOW = wire => {
