@@ -27,8 +27,6 @@ const gameData = [
         strikesAllowed: 3,
         strikes: 2,
         status: 'failed',
-
-
     },
     {
         modules: 5,
@@ -38,8 +36,6 @@ const gameData = [
         strikesAllowed: 3,
         strikes: 2,
         status: 'failed',
-
-
     },
 ]
 
