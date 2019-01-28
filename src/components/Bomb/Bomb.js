@@ -105,7 +105,7 @@ class Bomb extends Component {
         gltf.scene.position.z = 0;				    //Position (z = front +, back-)
         gltf.scene.rotation.x = Math.PI / 2;
         let material = new THREE.MeshPhongMaterial({
-          color: 0x11bbbb,
+          color: 0xa9acb5,
           shininess: 100,
         });
         let material2 = new THREE.MeshPhongMaterial({
@@ -361,12 +361,16 @@ class Bomb extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.strikeCount === 1) {
-      const Strike1 = this.state.clock.children.find(child => child.name === 'Strike1')
-      Strike1.material = new THREE.MeshPhongMaterial({
-        color: 0xFF0000,
-        shininess: 10,
-      })
+    if (prevState.strikeCount < this.state.strikeCount) {
+      if (this.state.strikeCount === this.state.strikesAllowed) console.log('GAME OVER')
+      else {
+        const count = this.state.strikeCount
+        const Strike = this.state.clock.children.find(child => child.name === `Strike${count}`)
+        Strike.material = new THREE.MeshPhongMaterial({
+          color: 0xFF0000,
+          shininess: 10,
+        })
+      }
       // make a util for strike material and a helper function for getting and setting a strike
     } else if (this.state)
       if (prevState.SubjectOfWires.passed !== this.state.SubjectOfWires.passed) {

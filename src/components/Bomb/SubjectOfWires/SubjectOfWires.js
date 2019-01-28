@@ -30,15 +30,15 @@ const yellow = new MeshPhongMaterial({
 })
 
 export const defaultMaterial = new MeshPhongMaterial({
-  color: 0x999999,
+  color: 0xaaaab4,
   shininess: 100,
 });
 export const cubeMaterial = new MeshPhongMaterial({
-  color: 0x222222,
-  shininess: 10,
+  color: 0x4c4e5b,
+  shininess: 100,
 });
 export const socketMaterial = new MeshPhongMaterial({
-  color: 0x444444,
+  color: 0x4c4e5b,
   shininess: 10,
 })  
 
