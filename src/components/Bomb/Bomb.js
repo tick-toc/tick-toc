@@ -207,6 +207,15 @@ class Bomb extends Component {
           if (o.isMesh) {
             if (o.name === 'Cube001') o.material = SOW.cubeMaterial
             else if (o.name === 'Socket') o.material = SOW.socketMaterial
+            else if (o.name === 'LED') {
+              let em = new THREE.Color( 0x000000 );
+              let LEDmo1 = new THREE.PointLight( 0x00ff00, 5, 0.2, 2 );
+              LEDmo1.name = "LED1"
+              module1.add( LEDmo1 );
+              LEDmo1.position.copy(o.position);
+              LEDmo1.visible = false;
+              o.material = new THREE.MeshPhongMaterial( { transparent: true, opacity: 0.9, emissive: em, color: em, shininess: 100 } );
+            }
             else if (!o.name.includes('Wire')) o.material = SOW.defaultMaterial
           }
         });
@@ -363,10 +372,9 @@ class Bomb extends Component {
     if (prevState.SubjectOfWires.passed !== this.state.SubjectOfWires.passed) {
       // helperfunction and util for LED; pass in the module and turn on its LED
       const LED = this.state.module1.children.find(child => child.name === 'LED')
-      LED.material = new THREE.MeshPhongMaterial({
-        color: 0x22FF22,
-        shininess: 10,
-      })
+      LED.material.color.setRGB(0,1,0)
+      console.log('LED herer', LED)
+      this.state.module1.children.filter(a => a.name === 'LED1')[0].visible = true;
     }
 
   }
