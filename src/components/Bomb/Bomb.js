@@ -51,7 +51,7 @@ class Bomb extends Component {
 
   componentDidMount() {
 
-    var camera, scene, renderer, box, clock, module1;
+    var camera, scene, renderer, box, clock, digital, module1;
     var targetList = [];
     var projector, mouse = { x: 0, y: 0 };
 
@@ -150,6 +150,12 @@ class Bomb extends Component {
             else if (o.name === 'Cylinder') {
               o.material = material
               targetList.push(o)
+            } else if ( o.name === 'Strike1' || o.name === 'Strike2') {
+              o.material = new THREE.MeshPhongMaterial({
+                color: 0xFF0000,
+                shininess: 10,
+              })
+              o.visible = false;
             }
             else o.material = material;
           }
@@ -159,6 +165,34 @@ class Bomb extends Component {
         THIS.setState({ clock })
         box.add(clock);
       });
+
+      var digitalLoader = new GLTFLoader();
+      digitalLoader.load('models/digital.glb', function (glft) {
+        digital = glft.scene
+        glft.scene.scale.set(0.9, 0.9, 0.9);
+        glft.scene.position.x = 0;				    //Position (x = right+ left-)
+        glft.scene.position.y = 0;				    //Position (y = up+, down-)
+        glft.scene.position.z = 0;				    //Position (z = front +, back-)
+        var material = new THREE.MeshPhongMaterial({
+          color: 0xee0000,
+          shininess: 100,
+        });
+        digital.traverse((o) => {
+          if (o.isMesh) {
+            o.material = material;
+            if (o.name === 'D1-2') o.visible = false
+            if (o.name === 'D1-5') o.visible = false
+            if (o.name === 'D2-7') o.visible = false
+            if (o.name === 'D3-7') o.visible = false
+          }
+        });
+        clock.castShadow = true;
+        clock.receiveShadow = true;
+        THIS.setState({ clock })
+        clock.add(digital);
+      });
+
+
 
       let module1Loader = new GLTFLoader();
       module1Loader.load('models/mo1.glb', function (gltf) {
@@ -225,37 +259,7 @@ class Bomb extends Component {
         THIS.setState({ module1 })
         box.add(module1);
       });
-
-      let fontLoader = new THREE.FontLoader();
-      fontLoader.load('fonts/Digital-7_Regular.json', function (font) {
-
-        let textGeo = new THREE.TextGeometry('5:00', {
-          font: font,
-          size: 12,
-          height: 1,
-          curveSegments: 2,
-          bevelEnabled: true,
-          bevelThickness: 1,
-          bevelSize: 0.1,
-          bevelSegments: 5
-        });
-        let textMat = new THREE.MeshPhongMaterial({
-          color: 0xff1111,
-          shininess: 100,
-        });
-        if (textGeo) {
-          textGeo.computeBoundingBox();
-          textGeo.computeVertexNormals();
-          let text = new THREE.Mesh(textGeo, textMat)
-          text.scale.set(0.06, 0.06, 0.06);
-          text.position.x = 0.16;
-          text.position.y = -0.68;
-          text.position.z = 0.8;
-          text.rotation.y = Math.PI / 2;
-          THIS.setState({ clockTime: text })
-          // clock.add(text)
-        }
-      });
+      
 
       // Renderer
 
@@ -361,15 +365,13 @@ class Bomb extends Component {
   }
 
   componentDidUpdate(prevProps,prevState) {
+
     if (prevState.strikeCount < this.state.strikeCount) {
       if (this.state.strikeCount === this.state.strikesAllowed) console.log('GAME OVER')
       else {
         const count = this.state.strikeCount
         const Strike = this.state.clock.children.find(child => child.name === `Strike${count}`)
-        Strike.material = new THREE.MeshPhongMaterial({
-          color: 0xFF0000,
-          shininess: 10,
-        })
+        Strike.visible = true
       }
     // make a util for strike material and a helper function for getting and setting a strike
     } else if (this.state)
@@ -377,7 +379,6 @@ class Bomb extends Component {
       // helperfunction and util for LED; pass in the module and turn on its LED
       const LED = this.state.module1.children.find(child => child.name === 'LED')
       LED.material.color.setRGB(0,1,0)
-      console.log('LED herer', LED)
       this.state.module1.children.filter(a => a.name === 'LED1')[0].visible = true;
     }
 
