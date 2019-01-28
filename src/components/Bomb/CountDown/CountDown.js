@@ -33,4 +33,29 @@ clockLoader.load('models/clock.glb', function (gltf) {
   clockComponent = clock
 })
 
+
+
+// import * as THREE from 'three';
+
+var time = 300
+var counter = 0
+
+function timeIt() {
+
+  counter++
+  var timeLeft = time - counter
+
+  var min = Math.floor(timeLeft / 60)
+  var sec = Math.floor(timeLeft % 60)
+
+  // console.log(min + ':' + sec)
+  const str = (min + ':' + sec).toString()
+  // console.log('str', str)
+  console.log(str)
+  return str
+}
+setInterval(timeIt, 1000)
+
+console.log('hi')
+
 export default clockComponent
