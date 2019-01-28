@@ -1,25 +1,64 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
-
+import * as SOW from './SubjectOfWires/SubjectOfWires'
+import { generateRandom } from '../../util'
 
 class Bomb extends Component {
   constructor(props) {
     super(props)
     this.canvasRef = React.createRef()
+    this.state = {
+      SubjectOfWires: {
+        inactive: true,
+        active: false,
+        passed: false,
+        failed: false,
+      },
+      moduleTwo: {
+        inactive: true,
+        active: false,
+        passed: false,
+        failed: false
+      },
+      moduleThree: {
+        inactive: true,
+        active: false,
+        passed: false,
+        failed: false
+      },
+      moduleFour: {
+        inactive: true,
+        active: false,
+        passed: false,
+        failed: false
+      },
+      moduleFive: {
+        inactive: true,
+        active: false,
+        passed: false,
+        failed: false
+      },
+
+      timer: 300000,
+      strikesAllowed: 3,
+      strikeCount: 0,
+      box: {},
+      clockTime: {},
+      module1: {}
+    }
   }
 
   componentDidMount() {
 
-    var camera, scene, renderer, box, clock, mo1;
+    var camera, scene, renderer, box, clock, module1;
     var targetList = [];
     var projector, mouse = { x: 0, y: 0 };
 
-
-    init();
+    init(this);
     animate();
 
-    function init() {
+    function init(THIS) {
 
       camera = new THREE.PerspectiveCamera(36, window.innerWidth / window.innerHeight, 0.25, 16);
 
@@ -31,7 +70,7 @@ class Bomb extends Component {
 
       scene.add(new THREE.AmbientLight(0x505050));
 
-      var spotLight = new THREE.SpotLight(0xffffff);
+      let spotLight = new THREE.SpotLight(0xffffff);
       spotLight.angle = Math.PI / 5;
       spotLight.penumbra = 0.2;
       spotLight.position.set(2, 3, 3);
@@ -42,7 +81,7 @@ class Bomb extends Component {
       spotLight.shadow.mapSize.height = 1024;
       scene.add(spotLight);
 
-      var dirLight = new THREE.DirectionalLight(0x55505a, 1);
+      let dirLight = new THREE.DirectionalLight(0x55505a, 1);
       dirLight.position.set(0, 3, 0);
       dirLight.castShadow = true;
       dirLight.shadow.camera.near = 1;
@@ -57,11 +96,7 @@ class Bomb extends Component {
       dirLight.shadow.mapSize.height = 1024;
       scene.add(dirLight);
 
-      // var LED1 = new THREE.AmbientLight(0x00dd00, 1);
-      // dirLight.position.set(-0.5, 1.7, 0);
-      // scene.add(LED1)
-
-      var boxLoader = new GLTFLoader();
+      let boxLoader = new GLTFLoader();
       boxLoader.load('models/box.glb', function (gltf) {
         box = gltf.scene;
         gltf.scene.scale.set(1, 1, 1);
@@ -69,11 +104,11 @@ class Bomb extends Component {
         gltf.scene.position.y = 1.7;				    //Position (y = up+, down-)
         gltf.scene.position.z = 0;				    //Position (z = front +, back-)
         gltf.scene.rotation.x = Math.PI / 2;
-        var material = new THREE.MeshPhongMaterial({
+        let material = new THREE.MeshPhongMaterial({
           color: 0x11bbbb,
           shininess: 100,
         });
-        var material2 = new THREE.MeshPhongMaterial({
+        let material2 = new THREE.MeshPhongMaterial({
           color: 0x222222,
           shininess: 10,
         });
@@ -88,6 +123,7 @@ class Bomb extends Component {
 
         box.castShadow = true;
         box.receiveShadow = true;
+        THIS.setState({box})
         scene.add(box);
       });
 
@@ -108,101 +144,92 @@ class Bomb extends Component {
           color: 0x222222,
           shininess: 10,
         });
-        var red = new THREE.MeshPhongMaterial({
-          color: 0xff1111,
-          shininess: 100,
-        });
         clock.traverse((o) => {
           if (o.isMesh) {
             if (o.name === 'Cube001') o.material = material2;
-            else if (o.name === 'Strike1' || o.name === 'Strike2') {
-              o.material = red
-              o.visible = false;
+            else if (o.name === 'Cylinder') {
+              o.material = material
+              targetList.push(o)
             }
             else o.material = material;
           }
         });
         clock.castShadow = true;
         clock.receiveShadow = true;
+        THIS.setState({ clock })
         box.add(clock);
       });
 
-
-      var mo1Loader = new GLTFLoader();
-      mo1Loader.load('models/mo1.glb', function (gltf) {
-        mo1 = gltf.scene;
+      let module1Loader = new GLTFLoader();
+      module1Loader.load('models/mo1.glb', function (gltf) {
+        module1 = gltf.scene;
         gltf.scene.scale.set(0.42, 0.42, 0.42);
         gltf.scene.position.x = -0.49;				    //Position (x = right+ left-)
         gltf.scene.position.y = -0.3;				    //Position (y = up+, down-)
         gltf.scene.position.z = -0.47;				    //Position (z = front +, back-)
         gltf.scene.rotation.z = Math.PI / 2;
         gltf.scene.rotation.y = - Math.PI / 2;
-        var material = new THREE.MeshPhongMaterial({
-          color: 0x999999,
-          shininess: 100,
-        });
-        var material2 = new THREE.MeshPhongMaterial({
-          color: 0x222222,
-          shininess: 10,
-        });
-        var material3 = new THREE.MeshPhongMaterial({
-          color: 0x444444,
-          shininess: 10,
-        });
-        var red = new THREE.MeshPhongMaterial({
-          color: 0xff1111,
-          shininess: 100,
-        });
-        var white = new THREE.MeshPhongMaterial({
-          color: 0xffffff,
-          shininess: 100,
-        });
-        var blue = new THREE.MeshPhongMaterial({
-          color: 0x0000ff,
-          shininess: 100,
-        });
-        var yellow = new THREE.MeshPhongMaterial({
-          color: 0xeedd00,
-          shininess: 100,
-        });
-        mo1.traverse((o) => {
+
+        let count = 3 // parseInt(SOW.wireCount[Math.floor(Math.random() * wireCount.length)])
+        let wireCases = SOW.wireCountCases[count]
+        let wireCase = wireCases[generateRandom(wireCases.length)]
+        let wires = module1.children.filter(element => element.name.startsWith('Wire'))
+        let uncutWires = wires.filter(wire => !wire.name.endsWith('Cut')).sort((a, b) => {
+          if (a.name < b.name) return -1
+          else if (a.name > b.name) return 1
+          else return 0
+        })
+        let cutWires = wires.filter(wire => wire.name.endsWith('Cut')).sort((a,b) => {
+          if (a.name < b.name) return -1
+          else if (a.name > b.name) return 1
+          else return 0
+        })
+        while (cutWires.length > count) {
+          let wireIndex = generateRandom(cutWires.length)
+          module1.remove(cutWires[wireIndex])
+          module1.remove(uncutWires[wireIndex])
+          cutWires = cutWires.filter((wire,index) => index !== wireIndex)
+          uncutWires = uncutWires.filter((wire,index) => index !== wireIndex)
+        }
+
+        uncutWires.forEach((wire,index) => {
+          wire.material = wireCase.colors[index]
+          cutWires[index].material = wireCase.colors[index] 
+          if (wireCase.correct === index) {
+            wire.userData = {correct: true }
+          } else {
+            wire.userData = { correct: false }
+          }
+          targetList.push(wire)
+        })
+
+        module1.traverse((o) => {
           if (o.isMesh) {
-            if (o.name === 'Cube001') o.material = material2;
-            else if (o.name === 'Socket') o.material = material3;
-            else if (o.name === 'Wire1' || o.name === 'Wire1Cut') {
-              o.material = red;
-              targetList.push(o)
-            }
-            else if (o.name === 'Wire2' || o.name === 'Wire2Cut' || o.name === 'Wire5' || o.name === 'Wire5Cut') { 
-              o.material = white;
-              targetList.push(o)
-            } else if (o.name === 'Wire3' || o.name === 'Wire3Cut'|| o.name === 'Wire6' ||         o.name === 'Wire6Cut') {
-              o.material = blue;
-              targetList.push(o)
-            } else if (o.name === 'Wire4' || o.name === 'Wire4Cut') {
-            o.material = yellow;
-            targetList.push(o)
-            } else if (o.name === 'LED') {
+            if (o.name === 'Cube001') o.material = SOW.cubeMaterial
+            else if (o.name === 'Socket') o.material = SOW.socketMaterial
+            else if (o.name === 'LED') {
               let em = new THREE.Color( 0x000000 );
               let LEDmo1 = new THREE.PointLight( 0x00ff00, 5, 0.2, 2 );
               LEDmo1.name = "LED1"
-              mo1.add( LEDmo1 );
+              module1.add( LEDmo1 );
               LEDmo1.position.copy(o.position);
               LEDmo1.visible = false;
               o.material = new THREE.MeshPhongMaterial( { transparent: true, opacity: 0.9, emissive: em, color: em, shininess: 100 } );
-              }
-            else o.material = material;
+            }
+            else if (!o.name.includes('Wire')) o.material = SOW.defaultMaterial
           }
         });
-        mo1.castShadow = true;
-        mo1.receiveShadow = true;
-        box.add(mo1);
+
+        module1.castShadow = true;
+        module1.receiveShadow = true;
+        THIS.setState({ module1 })
+        box.add(module1);
       });
 
-      var fontLoader = new THREE.FontLoader();
+      let fontLoader = new THREE.FontLoader();
       fontLoader.load('fonts/Digital-7_Regular.json', function (font) {
 
-        var textGeo = new THREE.TextGeometry('5:00', {
+        let textGeo = new THREE.TextGeometry('5:00', {
           font: font,
           size: 12,
           height: 1,
@@ -212,27 +239,28 @@ class Bomb extends Component {
           bevelSize: 0.1,
           bevelSegments: 5
         });
-        var textMat = new THREE.MeshPhongMaterial({
+        let textMat = new THREE.MeshPhongMaterial({
           color: 0xff1111,
           shininess: 100,
         });
         if (textGeo) {
           textGeo.computeBoundingBox();
           textGeo.computeVertexNormals();
-          var text = new THREE.Mesh(textGeo, textMat)
+          let text = new THREE.Mesh(textGeo, textMat)
           text.scale.set(0.06, 0.06, 0.06);
           text.position.x = 0.16;
           text.position.y = -0.68;
           text.position.z = 0.8;
           text.rotation.y = Math.PI / 2;
-          clock.add(text)
+          THIS.setState({ clockTime: text })
+          // clock.add(text)
         }
       });
 
       // Renderer
-      //useRef
-      var container = document.getElementById('bomb-box');
-      // var container = this.canvasRef
+
+      let container = document.getElementById('bomb-box');
+      // let container = this.canvasRef
       renderer = new THREE.WebGLRenderer();
       renderer.shadowMap.enabled = true;
       renderer.setPixelRatio(window.devicePixelRatio);
@@ -242,8 +270,8 @@ class Bomb extends Component {
 
       // Dragger
 
-      var isDragging = false;
-      var previousMousePosition = {
+      let isDragging = false;
+      let previousMousePosition = {
         x: 0,
         y: 0
       };
@@ -252,9 +280,9 @@ class Bomb extends Component {
         return angle * (Math.PI / 180);
       };
 
-      // const toDegrees = (angle) => {
-      //     return angle * (180 / Math.PI);
-      // };
+      const toDegrees = (angle) => {
+          return angle * (180 / Math.PI);
+      };
 
       const renderArea = renderer.domElement;
 
@@ -263,7 +291,7 @@ class Bomb extends Component {
       });
 
       renderArea.addEventListener('mousemove', (e) => {
-        var deltaMove = {
+        let deltaMove = {
           x: e.offsetX - previousMousePosition.x,
           y: e.offsetY - previousMousePosition.y
         };
@@ -286,19 +314,12 @@ class Bomb extends Component {
         isDragging = false;
       });
 
-
-      // Controls
-      // var controls = new THREE.OrbitControls( camera, renderer.domElement );
-      // controls.target.set( 0, 1, 0 );
-      // controls.update();
-
-
       projector = new THREE.Projector();
-      document.addEventListener('mousedown', onDocumentMouseDown, false);
-
+      document.addEventListener('mousedown', (e => {onDocumentMouseDown(e,THIS)}), false);
 
     }
-    function onDocumentMouseDown(event) {
+
+    function onDocumentMouseDown(event, THIS) {
       // the following line would stop any other event handler from firing
       // (such as the mouse's TrackballControls)
       // event.preventDefault();
@@ -316,21 +337,11 @@ class Bomb extends Component {
       // create an array containing all objects in the scene with which the ray intersects
       var intersects = ray.intersectObjects(targetList);
       // if there is one (or more) intersections
-      
       if (intersects.length > 0) {
-        mo1.remove(intersects[0].object)
-        if (intersects[0].object.name === 'Wire4') {
-          mo1.children.filter(a => a.name === "LED1")[0].visible = true
-          mo1.children.filter(a => a.name === "LED")[0].material.color.setRGB(0,1,0)
-        } else {
-          if (clock.children.filter( a => a.name === 'Strike1')[0].visible) clock.children.filter( a => a.name === 'Strike2')[0].visible = true
-          else clock.children.filter( a => a.name === 'Strike1')[0].visible = true
-
-        }
+        THIS.handleSOW(intersects[0].object.userData)
+        module1.remove(intersects[0].object)
       }
     }
-
-
 
     function onWindowResize() {
 
@@ -346,6 +357,40 @@ class Bomb extends Component {
       requestAnimationFrame(animate);
 
       renderer.render(scene, camera);
+    }
+  }
+
+  componentDidUpdate(prevProps,prevState) {
+    if (this.state.strikeCount === 1) {
+      const Strike1 = this.state.clock.children.find(child => child.name === 'Strike1')
+      Strike1.material = new THREE.MeshPhongMaterial({
+        color: 0xFF0000,
+        shininess: 10,
+      })
+    // make a util for strike material and a helper function for getting and setting a strike
+    } else if (this.state)
+    if (prevState.SubjectOfWires.passed !== this.state.SubjectOfWires.passed) {
+      // helperfunction and util for LED; pass in the module and turn on its LED
+      const LED = this.state.module1.children.find(child => child.name === 'LED')
+      LED.material.color.setRGB(0,1,0)
+      console.log('LED herer', LED)
+      this.state.module1.children.filter(a => a.name === 'LED1')[0].visible = true;
+    }
+
+  }
+
+  handleSOW = wire => {
+    if (wire.correct === true) {
+      this.setState(({ SubjectOfWires }) => ({
+        SubjectOfWires: {
+          ...SubjectOfWires,
+          passed: !SubjectOfWires.passed
+        }
+      }))
+    } else {
+      this.setState(({ strikeCount }) => ({
+        strikeCount: strikeCount + 1
+      }))
     }
   }
 
