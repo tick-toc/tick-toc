@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
-import * as SOW from './subjectofwires/subjectofwires'
+import * as SOW from './SubjectOfWires/SubjectOfWires'
 import { generateRandom } from '../../util'
 
 class Bomb extends Component {
@@ -140,7 +140,7 @@ class Bomb extends Component {
           color: 0x999999,
           shininess: 100,
         });
-        let material2 = new THREE.MeshPhongMaterial({
+        var material2 = new THREE.MeshPhongMaterial({
           color: 0x222222,
           shininess: 10,
         });
@@ -156,7 +156,7 @@ class Bomb extends Component {
         });
         clock.castShadow = true;
         clock.receiveShadow = true;
-        // THIS.setState({ clock })
+        THIS.setState({ clock })
         box.add(clock);
       });
 
@@ -352,12 +352,21 @@ class Bomb extends Component {
   }
 
   componentDidUpdate(prevProps,prevState) {
+    if (this.state.strikeCount === 1) {
+      const Strike1 = this.state.clock.children.find(child => child.name === 'Strike1')
+      Strike1.material = new THREE.MeshPhongMaterial({
+        color: 0xFF0000,
+        shininess: 10,
+      })
+    // make a util for strike material and a helper function for getting and setting a strike
+    } else if (this.state)
     if (prevState.SubjectOfWires.passed !== this.state.SubjectOfWires.passed) {
+      // helperfunction and util for LED; pass in the module and turn on its LED
       const LED = this.state.module1.children.find(child => child.name === 'LED')
       LED.material = new THREE.MeshPhongMaterial({
         color: 0x22FF22,
         shininess: 10,
-      });
+      })
     }
 
   }

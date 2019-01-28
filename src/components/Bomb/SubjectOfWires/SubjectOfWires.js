@@ -67,12 +67,12 @@ export const wireCountCases = {
       correct: 1
     },
     {
-      colors: [white,red,white],
+      colors: [blue,white,white],
       correct: 1
     },
     {
       colors: [blue,red,white],
-      correct: 1
+      correct: 2
     }],
   // '4': [],
   // '5': [],
