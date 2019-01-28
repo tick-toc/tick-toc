@@ -40,7 +40,7 @@ class Bomb extends Component {
         failed: false
       },
 
-      timer: 300000,
+      timer: 300,
       strikesAllowed: 3,
       strikeCount: 0,
       box: {},
@@ -123,7 +123,7 @@ class Bomb extends Component {
 
         box.castShadow = true;
         box.receiveShadow = true;
-        THIS.setState({box})
+        THIS.setState({ box })
         scene.add(box);
       });
 
@@ -150,7 +150,7 @@ class Bomb extends Component {
             else if (o.name === 'Cylinder') {
               o.material = material
               targetList.push(o)
-            } else if ( o.name === 'Strike1' || o.name === 'Strike2') {
+            } else if (o.name === 'Strike1' || o.name === 'Strike2') {
               o.material = new THREE.MeshPhongMaterial({
                 color: 0xFF0000,
                 shininess: 10,
@@ -213,7 +213,7 @@ class Bomb extends Component {
           else if (a.name > b.name) return 1
           else return 0
         })
-        let cutWires = wires.filter(wire => wire.name.endsWith('Cut')).sort((a,b) => {
+        let cutWires = wires.filter(wire => wire.name.endsWith('Cut')).sort((a, b) => {
           if (a.name < b.name) return -1
           else if (a.name > b.name) return 1
           else return 0
@@ -222,15 +222,15 @@ class Bomb extends Component {
           let wireIndex = generateRandom(cutWires.length)
           module1.remove(cutWires[wireIndex])
           module1.remove(uncutWires[wireIndex])
-          cutWires = cutWires.filter((wire,index) => index !== wireIndex)
-          uncutWires = uncutWires.filter((wire,index) => index !== wireIndex)
+          cutWires = cutWires.filter((wire, index) => index !== wireIndex)
+          uncutWires = uncutWires.filter((wire, index) => index !== wireIndex)
         }
 
-        uncutWires.forEach((wire,index) => {
+        uncutWires.forEach((wire, index) => {
           wire.material = wireCase.colors[index]
-          cutWires[index].material = wireCase.colors[index] 
+          cutWires[index].material = wireCase.colors[index]
           if (wireCase.correct === index) {
-            wire.userData = {correct: true }
+            wire.userData = { correct: true }
           } else {
             wire.userData = { correct: false }
           }
@@ -242,13 +242,13 @@ class Bomb extends Component {
             if (o.name === 'Cube001') o.material = SOW.cubeMaterial
             else if (o.name === 'Socket') o.material = SOW.socketMaterial
             else if (o.name === 'LED') {
-              let em = new THREE.Color( 0x000000 );
-              let LEDmo1 = new THREE.PointLight( 0x00ff00, 5, 0.2, 2 );
+              let em = new THREE.Color(0x000000);
+              let LEDmo1 = new THREE.PointLight(0x00ff00, 5, 0.2, 2);
               LEDmo1.name = "LED1"
-              module1.add( LEDmo1 );
+              module1.add(LEDmo1);
               LEDmo1.position.copy(o.position);
               LEDmo1.visible = false;
-              o.material = new THREE.MeshPhongMaterial( { transparent: true, opacity: 0.9, emissive: em, color: em, shininess: 100 } );
+              o.material = new THREE.MeshPhongMaterial({ transparent: true, opacity: 0.9, emissive: em, color: em, shininess: 100 });
             }
             else if (!o.name.includes('Wire')) o.material = SOW.defaultMaterial
           }
@@ -259,7 +259,7 @@ class Bomb extends Component {
         THIS.setState({ module1 })
         box.add(module1);
       });
-      
+
 
       // Renderer
 
@@ -285,7 +285,7 @@ class Bomb extends Component {
       };
 
       const toDegrees = (angle) => {
-          return angle * (180 / Math.PI);
+        return angle * (180 / Math.PI);
       };
 
       const renderArea = renderer.domElement;
@@ -319,7 +319,7 @@ class Bomb extends Component {
       });
 
       projector = new THREE.Projector();
-      document.addEventListener('mousedown', (e => {onDocumentMouseDown(e,THIS)}), false);
+      document.addEventListener('mousedown', (e => { onDocumentMouseDown(e, THIS) }), false);
 
     }
 
@@ -364,7 +364,7 @@ class Bomb extends Component {
     }
   }
 
-  componentDidUpdate(prevProps,prevState) {
+  componentDidUpdate(prevProps, prevState) {
 
     if (prevState.strikeCount < this.state.strikeCount) {
       if (this.state.strikeCount === this.state.strikesAllowed) console.log('GAME OVER')
@@ -373,14 +373,14 @@ class Bomb extends Component {
         const Strike = this.state.clock.children.find(child => child.name === `Strike${count}`)
         Strike.visible = true
       }
-    // make a util for strike material and a helper function for getting and setting a strike
+      // make a util for strike material and a helper function for getting and setting a strike
     } else if (this.state)
-    if (prevState.SubjectOfWires.passed !== this.state.SubjectOfWires.passed) {
-      // helperfunction and util for LED; pass in the module and turn on its LED
-      const LED = this.state.module1.children.find(child => child.name === 'LED')
-      LED.material.color.setRGB(0,1,0)
-      this.state.module1.children.filter(a => a.name === 'LED1')[0].visible = true;
-    }
+      if (prevState.SubjectOfWires.passed !== this.state.SubjectOfWires.passed) {
+        // helperfunction and util for LED; pass in the module and turn on its LED
+        const LED = this.state.module1.children.find(child => child.name === 'LED')
+        LED.material.color.setRGB(0, 1, 0)
+        this.state.module1.children.filter(a => a.name === 'LED1')[0].visible = true;
+      }
 
   }
 
