@@ -8,3 +8,7 @@
 // text.name = "ClockDisplay"
 // clock.add(text)
 // targetList.push(text)
+
+function timeIt(time) {
+
+}
