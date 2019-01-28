@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
-import {OBJLoader} from 'three-obj-mtl-loader'
+
 
 class Bomb extends Component {
   constructor(props) {
@@ -56,6 +56,10 @@ class Bomb extends Component {
       dirLight.shadow.mapSize.width = 1024;
       dirLight.shadow.mapSize.height = 1024;
       scene.add(dirLight);
+
+      // var LED1 = new THREE.AmbientLight(0x00dd00, 1);
+      // dirLight.position.set(-0.5, 1.7, 0);
+      // scene.add(LED1)
 
       var boxLoader = new GLTFLoader();
       boxLoader.load('models/box.glb', function (gltf) {
@@ -161,10 +165,6 @@ class Bomb extends Component {
           color: 0xeedd00,
           shininess: 100,
         });
-        var grey = new THREE.MeshPhongMaterial({
-          color: 0x333333,
-          shininess: 100,
-        });
         mo1.traverse((o) => {
           if (o.isMesh) {
             if (o.name === 'Cube001') o.material = material2;
@@ -183,8 +183,13 @@ class Bomb extends Component {
             o.material = yellow;
             targetList.push(o)
             } else if (o.name === 'LED') {
-              o.material = grey;
-              targetList.push(o)
+              let em = new THREE.Color( 0x000000 );
+              let LEDmo1 = new THREE.PointLight( 0x00ff00, 5, 0.2, 2 );
+              LEDmo1.name = "LED1"
+              mo1.add( LEDmo1 );
+              LEDmo1.position.copy(o.position);
+              LEDmo1.visible = false;
+              o.material = new THREE.MeshPhongMaterial( { transparent: true, opacity: 0.9, emissive: em, color: em, shininess: 100 } );
               }
             else o.material = material;
           }
@@ -315,6 +320,7 @@ class Bomb extends Component {
       if (intersects.length > 0) {
         mo1.remove(intersects[0].object)
         if (intersects[0].object.name === 'Wire4') {
+          mo1.children.filter(a => a.name === "LED1")[0].visible = true
           mo1.children.filter(a => a.name === "LED")[0].material.color.setRGB(0,1,0)
         } else {
           if (clock.children.filter( a => a.name === 'Strike1')[0].visible) clock.children.filter( a => a.name === 'Strike2')[0].visible = true
