@@ -421,25 +421,13 @@ class Bomb extends Component {
       var min = Math.floor(count / 60);
       let seconds = count % 60;
       console.log('min: ', min)
-      var tenSecond = seconds % 10
+      var tenSecond = Math.floor(seconds % 60 / 10)
       var singleSecond = seconds % 10
 
-      if (this.state.count % 2 === 0) {
 
-        D11.visible = true;
-      } else {
-        D11.visible = false;
-
-      }
 
       console.log('>>>>>', this.state.clock.children[9].children)
-      D31.visible = false
-      D32.visible = false
-      D33.visible = false
-      D34.visible = false
-      D35.visible = false
-      D36.visible = false
-      D37.visible = false
+
       if (singleSecond === 0) {
         D31.visible = true
         D32.visible = true
@@ -534,8 +522,178 @@ class Bomb extends Component {
 
       }
 
+      //--------
+      if (tenSecond === 0) {
+        D21.visible = true
+        D22.visible = true
+        D23.visible = true
+        D24.visible = true
+        D25.visible = true
+        D26.visible = true
+        D27.visible = false
 
-      console.log('>>>>', singleSecond)
+      } else if (tenSecond === 1) {
+        D21.visible = false //position 1 set true
+        D22.visible = true //position 3
+        D23.visible = true //position 5
+        D24.visible = false //position 6 set true
+        D25.visible = false //position 4
+        D26.visible = false // position 2
+        D27.visible = false //position 7
+      } else if (tenSecond === 2) {
+        D21.visible = true //position 1 set true
+        D22.visible = true //position 3
+        D23.visible = false //position 5
+        D24.visible = true //position 6 set true
+        D25.visible = true //position 4
+        D26.visible = false // position 2
+        D27.visible = true //position 7
+      } else if (tenSecond === 3) {
+        D21.visible = true //position 1 set true
+        D22.visible = true //position 3
+        D23.visible = true //position 5
+        D24.visible = true //position 6 set true
+        D25.visible = false //position 4
+        D26.visible = false // position 2
+        D27.visible = true //position 7
+      } else if (tenSecond === 4) {
+        D21.visible = false //position 1 set true
+        D22.visible = true //position 3
+        D23.visible = true //position 5
+        D24.visible = false //position 6 set true
+        D25.visible = false //position 4
+        D26.visible = true // position 2
+        D27.visible = true //position 7
+      } else if (tenSecond === 5) {
+        D21.visible = true //position 1 set true
+        D22.visible = false //position 3
+        D23.visible = true //position 5
+        D24.visible = true //position 6 set true
+        D25.visible = false //position 4
+        D26.visible = true // position 2
+        D27.visible = true //position 7
+      } else if (tenSecond === 6) {
+        D21.visible = true
+        D22.visible = false
+        D23.visible = true
+        D24.visible = true
+        D25.visible = true
+        D26.visible = true
+        D27.visible = true
+      } else if (tenSecond === 7) {
+        D21.visible = true //position 1
+        D22.visible = true //position 3
+        D23.visible = true //position 5
+        D24.visible = false
+        D25.visible = false
+        D26.visible = false
+        D27.visible = false
+      } else if (tenSecond === 8) {
+        D21.visible = true
+        D22.visible = true //this is position 4
+        D23.visible = true
+        D24.visible = true
+        D25.visible = true
+        D26.visible = true
+        D27.visible = true
+      } else if (tenSecond === 9) {
+        D21.visible = true
+        D22.visible = true
+        D23.visible = true
+        D24.visible = false
+        D25.visible = false
+        D26.visible = true
+        D27.visible = true
+      }
+
+      //-----
+
+      if (min === 0) {
+        D11.visible = true
+        D12.visible = true
+        D13.visible = true
+        D14.visible = true
+        D15.visible = true
+        D16.visible = true
+        D17.visible = false
+
+      } else if (min === 1) {
+        D11.visible = false //position 1 set true
+        D12.visible = true //position 3
+        D13.visible = true //position 5
+        D14.visible = false //position 6 set true
+        D15.visible = false //position 4
+        D16.visible = false // position 2
+        D17.visible = false //position 7
+      } else if (min === 2) {
+        D11.visible = true //position 1 set true
+        D12.visible = true //position 3
+        D13.visible = false //position 5
+        D14.visible = true //position 6 set true
+        D15.visible = true //position 4
+        D16.visible = false // position 2
+        D17.visible = true //position 7
+      } else if (min === 3) {
+        D11.visible = true //position 1 set true
+        D12.visible = true //position 3
+        D13.visible = true //position 5
+        D14.visible = true //position 6 set true
+        D15.visible = false //position 4
+        D16.visible = false // position 2
+        D17.visible = true //position 7
+      } else if (min === 4) {
+        D11.visible = false //position 1 set true
+        D12.visible = true //position 3
+        D13.visible = true //position 5
+        D14.visible = false //position 6 set true
+        D15.visible = false //position 4
+        D16.visible = true // position 2
+        D17.visible = true //position 7
+      } else if (min === 5) {
+        D11.visible = true //position 1 set true
+        D12.visible = false //position 3
+        D13.visible = true //position 5
+        D14.visible = true //position 6 set true
+        D15.visible = false //position 4
+        D16.visible = true // position 2
+        D17.visible = true //position 7
+      } else if (min === 6) {
+        D11.visible = true
+        D12.visible = false
+        D13.visible = true
+        D14.visible = true
+        D15.visible = true
+        D16.visible = true
+        D17.visible = true
+      } else if (min === 7) {
+        D11.visible = true //position 1
+        D12.visible = true //position 3
+        D13.visible = true //position 5
+        D14.visible = false
+        D15.visible = false
+        D16.visible = false
+        D17.visible = false
+      } else if (min === 8) {
+        D11.visible = true
+        D12.visible = true //this is position 4
+        D13.visible = true
+        D14.visible = true
+        D15.visible = true
+        D16.visible = true
+        D17.visible = true
+      } else if (min === 9) {
+        D11.visible = true
+        D12.visible = true
+        D13.visible = true
+        D14.visible = false
+        D15.visible = false
+        D16.visible = true
+        D17.visible = true
+      }
+
+      console.log('>>>> min', min)
+      console.log('>>>> tenSecond', tenSecond)
+      console.log('>>>> singleSecond', singleSecond)
 
     }
 
