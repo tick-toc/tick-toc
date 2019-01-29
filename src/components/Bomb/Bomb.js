@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
 import * as SOW from './SubjectOfWires/SubjectOfWires'
-import { clockCases } from './CountDown/CountDown'
+import { clockCases } from './Clock/Clock'
 import { generateRandom } from '../../util'
 
 class Bomb extends Component {
@@ -405,7 +405,7 @@ class Bomb extends Component {
     }
 
     if (prevState.count !== this.state.count) {
-      const count = this.state.count
+      const { count } = this.state
       const minute = Math.floor( count / 60)
       const seconds = count % 60
       const tenSecond = Math.floor(seconds % 60 / 10)
