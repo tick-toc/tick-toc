@@ -3,6 +3,7 @@ const path = require('path');
 const morgan = require('morgan')
 
 const app = express();
+const db = require('./db')
 
 // Serve the static files from the React app
 app.use(morgan('dev'))
