@@ -5,6 +5,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "canvas": "^2.3.1",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
     "i": "^0.3.6",
     "jest-canvas-mock": "^1.1.1-beta.1",
     "jsdom": "^13.2.0",
