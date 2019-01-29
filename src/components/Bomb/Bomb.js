@@ -66,7 +66,7 @@ class Bomb extends Component {
 
   componentDidMount() {
 
-    var camera, scene, renderer, box, clock, digital, module1;
+    var camera, scene, renderer, box, clock, digital, module1, module2;
     var targetList = [];
     var projector, mouse = { x: 0, y: 0 };
 
@@ -87,9 +87,9 @@ class Bomb extends Component {
       scene.add(new THREE.AmbientLight(0x505050));
 
       let spotLight = new THREE.SpotLight(0xffffff);
-      spotLight.angle = Math.PI / 5;
+      spotLight.angle = Math.PI / 4;
       spotLight.penumbra = 0.2;
-      spotLight.position.set(2, 3, 3);
+      spotLight.position.set(3.2, 3.2, 2.9);
       spotLight.castShadow = true;
       spotLight.shadow.camera.near = 3;
       spotLight.shadow.camera.far = 10;
@@ -129,12 +129,12 @@ class Bomb extends Component {
           shininess: 10,
         });
         box.traverse((o) => {
-          if (o.isMesh) {
-            if (o.name === 'Cube001') {
-              o.material = material2;
+            if (o.isMesh) {
+              if (o.name === 'Cube001') {
+                o.material = SOW.cubeMaterial;
+              }
+              else o.material = SOW.defaultMaterial;
             }
-            else o.material = material;
-          }
         });
 
         box.castShadow = true;
@@ -148,14 +148,10 @@ class Bomb extends Component {
         clock = glft.scene
         glft.scene.scale.set(0.44, 0.44, 0.44);
         glft.scene.position.x = 0.49;				    //Position (x = right+ left-)
-        glft.scene.position.y = -0.3;				    //Position (y = up+, down-)
+        glft.scene.position.y = -0.31;				    //Position (y = up+, down-)
         glft.scene.position.z = -0.47;				    //Position (z = front +, back-)
         glft.scene.rotation.z = Math.PI / 2;
         glft.scene.rotation.y = - Math.PI / 2;
-        var material = new THREE.MeshPhongMaterial({
-          color: 0x999999,
-          shininess: 100,
-        });
         var material2 = new THREE.MeshPhongMaterial({
           color: 0x222222,
           shininess: 10,
@@ -163,9 +159,8 @@ class Bomb extends Component {
         clock.traverse((o) => {
           if (o.isMesh) {
             if (o.name === 'Cube001') o.material = material2;
-            else if (o.name === 'Cylinder') {
-              o.material = material
-
+            else if (o.name === 'Cube002') {
+              o.material = SOW.cubeMaterial
             } else if (o.name === 'Strike1' || o.name === 'Strike2') {
               o.material = new THREE.MeshPhongMaterial({
                 color: 0xFF0000,
@@ -173,7 +168,7 @@ class Bomb extends Component {
               })
               o.visible = false;
             }
-            else o.material = material;
+            else o.material = SOW.defaultMaterial;
           }
         });
         clock.castShadow = true;
@@ -215,7 +210,7 @@ class Bomb extends Component {
         module1 = gltf.scene;
         gltf.scene.scale.set(0.42, 0.42, 0.42);
         gltf.scene.position.x = -0.49;				    //Position (x = right+ left-)
-        gltf.scene.position.y = -0.3;				    //Position (y = up+, down-)
+        gltf.scene.position.y = -0.31;				    //Position (y = up+, down-)
         gltf.scene.position.z = -0.47;				    //Position (z = front +, back-)
         gltf.scene.rotation.z = Math.PI / 2;
         gltf.scene.rotation.y = - Math.PI / 2;
@@ -268,6 +263,45 @@ class Bomb extends Component {
         box.add(module1);
       });
 
+      var module2Loader = new GLTFLoader();
+      module2Loader.load('models/mo2.glb', function (glft) {
+        module2 = glft.scene
+        glft.scene.scale.set(0.42, 0.42, 0.42);
+        glft.scene.position.x = 1.49;				    //Position (x = right+ left-)
+        glft.scene.position.y = -0.31;				    //Position (y = up+, down-)
+        glft.scene.position.z = -0.47;				    //Position (z = front +, back-)
+        glft.scene.rotation.z = Math.PI / 2;
+        glft.scene.rotation.y = - Math.PI / 2;
+
+        module2.traverse((o) => {
+          var img = new THREE.MeshBasicMaterial({
+            map:THREE.ImageUtils.loadTexture('/models/Button1.png')
+          })
+          if (o.isMesh) {
+            if (o.name === 'Cube' || o.name ==='Cylinder' || o.name === 'LEDbase' || o.name === 'Circle001') o.material = SOW.defaultMaterial
+            else if (o.name === 'Cube001') o.material = SOW.cubeMaterial
+            else if (o.name === 'Circle') o.material = img
+            else if (o.name === 'LED') {
+              let em = new THREE.Color(0x000000);
+              let LEDmo2 = new THREE.PointLight(0x00ff00, 5, 0.2, 2);
+              LEDmo2.name = "LEDlight"
+              module2.add(LEDmo2);
+              LEDmo2.position.copy(o.position);
+              LEDmo2.visible = true;
+              o.material = new THREE.MeshPhongMaterial({ transparent: true, opacity: 0.9, emissive: em, color: LEDmo2.color, shininess: 100 });
+            } else if (o.name === 'Cube002') {
+              let em = new THREE.Color(0x000000);
+              let SEDmo2 = new THREE.PointLight(0x777700, 10, 0.8, 2);
+              SEDmo2.name = "LEDstripe"
+              module2.add(SEDmo2);
+              SEDmo2.position.copy(o.position);
+              SEDmo2.visible = false;
+              o.material = new THREE.MeshPhongMaterial({ transparent: true, opacity: 0.9, emissive: em, color: SEDmo2.color, shininess: 100 });
+            }
+          }
+        box.add(module2)
+        })
+      })
 
       // Renderer
 
@@ -392,7 +426,7 @@ class Bomb extends Component {
       }
 
     const setClock = (position,time) => {
-      this.state.clock.children[9].children.filter(child => child.name.startsWith(`D${position}`))
+      this.state.clock.children[6].children.filter(child => child.name.startsWith(`D${position}`))
       .sort((a,b) => sortByKey(a,b,'name')).forEach((mark,index) => mark.visible = clockCases[String(time)][index])
     }
 
