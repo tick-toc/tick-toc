@@ -2,17 +2,21 @@ import axios from 'axios'
 
 const initialGame = {
   startTime: 300,
+  minTime: 30,
+  maxTime: 570,
   finishTime: 0,
-  moduleTotal: 1,
+  moduleTotal: 2,
+  minMod: 2,
+  maxMod: 2,
   modulesCompleted: 0,
-  strikesAllowed: 3,
+  strikesAllowed: true,
   strikeCount: 0,
   SubjectOfWires: {
     active: true,
     passed: false
   },
   gameStarted: false,
-  gameStatus: 'pending'
+  gameStatus: 'pending', 
 }
 
 //ACTION TYPES

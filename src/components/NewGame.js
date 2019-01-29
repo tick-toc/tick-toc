@@ -9,12 +9,8 @@ class NewGame extends Component {
 
   state = {
     startTime: this.props.startTime,
-    minTime: 30,
-    maxTime: 570,
     moduleTotal: this.props.moduleTotal,
-    minMod: 1,
-    maxMod: 1,
-    strikesAllowed: true,
+    strikesAllowed: this.props.strikesAllowed,
   }
 
   handleStart = () => {
@@ -28,15 +24,19 @@ class NewGame extends Component {
   }
 
   handleModule = char => {
-    const { moduleTotal, minMod, maxMod } = this.state
-    if (moduleTotal !== minMod || moduleTotal !== maxMod) {
-      if (char === 'l') this.setState(prevState => ({moduleTotal: prevState.moduleTotal - 1}))
-      else if (char === 'm') this.setState(prevState => ({moduleTotal: prevState.moduleTotal + 1}))
+    const { moduleTotal } = this.state
+    const { minMod, maxMod } = this.props
+    if (moduleTotal > minMod && char === 'l') {
+      this.setState(prevState => ({moduleTotal: prevState.moduleTotal - 1}))
+    } else if (moduleTotal < maxMod && char === 'm') {
+      this.setState(prevState => ({moduleTotal: prevState.moduleTotal + 1}))
     }
   }
 
   handleTime = char => {
-    const { startTime, minTime, maxTime } = this.state
+    const { startTime } = this.state
+    const { minTime, maxTime } = this.props
+
     if (startTime > minTime && char === 'l') {
       this.setState(prevState => ({ startTime: prevState.startTime - 30 }))
     } else if (startTime < maxTime && char === 'm') {
@@ -89,6 +89,6 @@ class NewGame extends Component {
   }
 }
 
-const mapState = ({game: {startTime, moduleTotal}}) => ({startTime, moduleTotal})
+const mapState = ({ game }) => ({ ...game })
 const mapProps = (dispatch) => ({ startGame: (settings) => {dispatch(startGame(settings))} })
 export default connect(mapState,mapProps)(NewGame)
