@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
 import * as SOW from './SubjectOfWires/SubjectOfWires'
 import { clockCases } from './Clock/Clock'
-import { generateRandom } from '../../util'
+import { generateRandomIndex, sortByKey } from '../../util'
 
 class Bomb extends Component {
   constructor(props) {
@@ -222,20 +222,12 @@ class Bomb extends Component {
 
         let count = 3 // parseInt(SOW.wireCount[Math.floor(Math.random() * wireCount.length)])
         let wireCases = SOW.wireCountCases[count]
-        let wireCase = wireCases[generateRandom(wireCases.length)]
+        let wireCase = wireCases[generateRandomIndex(wireCases.length)]
         let wires = module1.children.filter(element => element.name.startsWith('Wire'))
-        let uncutWires = wires.filter(wire => !wire.name.endsWith('Cut')).sort((a, b) => {
-          if (a.name < b.name) return -1
-          else if (a.name > b.name) return 1
-          else return 0
-        })
-        let cutWires = wires.filter(wire => wire.name.endsWith('Cut')).sort((a, b) => {
-          if (a.name < b.name) return -1
-          else if (a.name > b.name) return 1
-          else return 0
-        })
+        let uncutWires = wires.filter(wire => !wire.name.endsWith('Cut')).sort((a, b) => sortByKey(a,b,'name'))
+        let cutWires = wires.filter(wire => wire.name.endsWith('Cut')).sort((a, b) => sortByKey(a,b,'name'))
         while (cutWires.length > count) {
-          let wireIndex = generateRandom(cutWires.length)
+          let wireIndex = generateRandomIndex(cutWires.length)
           module1.remove(cutWires[wireIndex])
           module1.remove(uncutWires[wireIndex])
           cutWires = cutWires.filter((wire, index) => index !== wireIndex)
@@ -401,7 +393,7 @@ class Bomb extends Component {
 
     const setClock = (position,time) => {
       this.state.clock.children[9].children.filter(child => child.name.startsWith(`D${position}`))
-      .forEach((mark,index) => mark.visible = clockCases[String(time)][index])
+      .sort((a,b) => sortByKey(a,b,'name')).forEach((mark,index) => mark.visible = clockCases[String(time)][index])
     }
 
     if (prevState.count !== this.state.count) {
