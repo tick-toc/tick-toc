@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import * as THREE from 'three';
+import '../../styles/Bomb.css'
 import GLTFLoader from 'three-gltf-loader'
-import * as SOW from './SubjectOfWires/SubjectOfWires'
-import { clockCases } from './Clock/Clock'
+import * as SOW from './Modules/SubjectOfWires'
+import { clockCases } from './Modules/Clock'
 import { generateRandomIndex, sortByKey } from '../../util'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
@@ -16,40 +17,32 @@ class Bomb extends Component {
         inactive: true,
         active: false,
         passed: false,
-        failed: false,
       },
       moduleTwo: {
         inactive: true,
         active: false,
         passed: false,
-        failed: false
       },
       moduleThree: {
         inactive: true,
         active: false,
         passed: false,
-        failed: false
       },
       moduleFour: {
         inactive: true,
         active: false,
         passed: false,
-        failed: false
       },
       moduleFive: {
         inactive: true,
         active: false,
         passed: false,
-        failed: false
       },
 
       count: this.props.startTime,
       minute: 0,
       tenSecond: 0,
       singleSecond: 0,
-      strikesAllowed: this.props.strikesAllowed,
-      strikeCount: 0,
-      moduleTotal: this.props.moduleTotal,
       box: {},
       clock: {},
       module1: {}
@@ -471,14 +464,19 @@ class Bomb extends Component {
 
 
   render() {
+    const { gameStatus } = this.props
     if (!this.props.gameStarted) this.props.history.push('/new-game')
     return (
-      <div id="bomb-box" ref={this.canvasRef.current} />
+      <Fragment>
+        { gameStatus !== 'pending' &&
+          <div className={`banner ${gameStatus}--banner`}>{gameStatus}</div>
+        }
+        <div id="bomb-box" ref={this.canvasRef.current} />
+      </Fragment>
     );
   }
 }
 
-const mapState = ({ game: { startTime, strikesAllowed, moduleTotal, gameStarted } }) => 
-({startTime, strikesAllowed, moduleTotal, gameStarted})
+const mapState = ({ game }) => ({ ...game })
 
 export default connect(mapState,null)(Bomb)
