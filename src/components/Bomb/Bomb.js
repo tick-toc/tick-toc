@@ -40,13 +40,24 @@ class Bomb extends Component {
         failed: false
       },
 
-      timer: 300,
+      count: 300,
       strikesAllowed: 3,
       strikeCount: 0,
       box: {},
       clockTime: {},
       module1: {}
     }
+
+
+  }
+
+  handleStart() {
+    this.timer = setInterval(() => {
+      const newCount = this.state.count - 1;
+      this.setState(
+        { count: newCount >= 0 ? newCount : 0 }
+      );
+    }, 1000);
   }
 
   componentDidMount() {
@@ -57,6 +68,7 @@ class Bomb extends Component {
 
     init(this);
     animate();
+
 
     function init(THIS) {
 
@@ -149,7 +161,7 @@ class Bomb extends Component {
             if (o.name === 'Cube001') o.material = material2;
             else if (o.name === 'Cylinder') {
               o.material = material
-              targetList.push(o)
+
             } else if (o.name === 'Strike1' || o.name === 'Strike2') {
               o.material = new THREE.MeshPhongMaterial({
                 color: 0xFF0000,
@@ -179,7 +191,7 @@ class Bomb extends Component {
         });
         digital.traverse((o) => {
           if (o.isMesh) {
-            o.material = material;
+            o.material = material; //this is where we paint the clock
             if (o.name === 'D1-2') o.visible = false
             if (o.name === 'D1-5') o.visible = false
             if (o.name === 'D2-7') o.visible = false
@@ -362,6 +374,7 @@ class Bomb extends Component {
 
       renderer.render(scene, camera);
     }
+    this.handleStart()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -382,6 +395,151 @@ class Bomb extends Component {
         this.state.module1.children.filter(a => a.name === 'LED1')[0].visible = true;
       }
 
+    if (prevState.count !== this.state.count) {
+      const count = this.state.count
+      const D11 = this.state.clock.children[9].children.find(child => child.name === 'D1-1')
+      const D12 = this.state.clock.children[9].children.find(child => child.name === 'D1-2')
+      const D13 = this.state.clock.children[9].children.find(child => child.name === 'D1-3')
+      const D14 = this.state.clock.children[9].children.find(child => child.name === 'D1-4')
+      const D15 = this.state.clock.children[9].children.find(child => child.name === 'D1-5')
+      const D16 = this.state.clock.children[9].children.find(child => child.name === 'D1-6')
+      const D17 = this.state.clock.children[9].children.find(child => child.name === 'D1-7')
+      const D21 = this.state.clock.children[9].children.find(child => child.name === 'D2-1')
+      const D22 = this.state.clock.children[9].children.find(child => child.name === 'D2-2')
+      const D23 = this.state.clock.children[9].children.find(child => child.name === 'D2-3')
+      const D24 = this.state.clock.children[9].children.find(child => child.name === 'D2-4')
+      const D25 = this.state.clock.children[9].children.find(child => child.name === 'D2-5')
+      const D26 = this.state.clock.children[9].children.find(child => child.name === 'D2-6')
+      const D27 = this.state.clock.children[9].children.find(child => child.name === 'D2-7')
+      const D31 = this.state.clock.children[9].children.find(child => child.name === 'D3-1')
+      const D32 = this.state.clock.children[9].children.find(child => child.name === 'D3-2')
+      const D33 = this.state.clock.children[9].children.find(child => child.name === 'D3-3')
+      const D34 = this.state.clock.children[9].children.find(child => child.name === 'D3-4')
+      const D35 = this.state.clock.children[9].children.find(child => child.name === 'D3-5')
+      const D36 = this.state.clock.children[9].children.find(child => child.name === 'D3-6')
+      const D37 = this.state.clock.children[9].children.find(child => child.name === 'D3-7')
+      var min = Math.floor(count / 60);
+      let seconds = count % 60;
+      console.log('min: ', min)
+      var tenSecond = seconds % 10
+      var singleSecond = seconds % 10
+
+      if (this.state.count % 2 === 0) {
+
+        D11.visible = true;
+      } else {
+        D11.visible = false;
+
+      }
+
+      console.log('>>>>>', this.state.clock.children[9].children)
+      D31.visible = false
+      D32.visible = false
+      D33.visible = false
+      D34.visible = false
+      D35.visible = false
+      D36.visible = false
+      D37.visible = false
+      if (singleSecond === 0) {
+        D31.visible = true
+        D32.visible = true
+        D33.visible = true
+        D34.visible = true
+        D35.visible = true
+        D36.visible = true
+        D37.visible = false
+
+      } else if (singleSecond === 1) {
+        D31.visible = false //position 1 set true
+        D32.visible = true //position 3
+        D33.visible = true //position 5
+        D34.visible = false //position 6 set true
+        D35.visible = false //position 4
+        D36.visible = false // position 2
+        D37.visible = false //position 7
+      } else if (singleSecond === 2) {
+        D31.visible = true //position 1 set true
+        D32.visible = true //position 3
+        D33.visible = false //position 5
+        D34.visible = true //position 6 set true
+        D35.visible = true //position 4
+        D36.visible = false // position 2
+        D37.visible = true //position 7
+
+
+      } else if (singleSecond === 3) {
+        D31.visible = true //position 1 set true
+        D32.visible = true //position 3
+        D33.visible = true //position 5
+        D34.visible = true //position 6 set true
+        D35.visible = false //position 4
+        D36.visible = false // position 2
+        D37.visible = true //position 7
+      } else if (singleSecond === 4) {
+        D31.visible = false //position 1 set true
+        D32.visible = true //position 3
+        D33.visible = true //position 5
+        D34.visible = false //position 6 set true
+        D35.visible = false //position 4
+        D36.visible = true // position 2
+        D37.visible = true //position 7
+      } else if (singleSecond === 5) {
+        D31.visible = true //position 1 set true
+        D32.visible = false //position 3
+        D33.visible = true //position 5
+        D34.visible = true //position 6 set true
+        D35.visible = false //position 4
+        D36.visible = true // position 2
+        D37.visible = true //position 7
+      } else if (singleSecond === 6) {
+        //this is a six
+        D31.visible = true
+        D32.visible = false
+        D33.visible = true
+        D34.visible = true
+        D35.visible = true
+        D36.visible = true
+        D37.visible = true
+
+
+      } else if (singleSecond === 7) {
+
+        D31.visible = true //position 1
+        D32.visible = true //position 3
+        D33.visible = true //position 5
+        D34.visible = false
+        D35.visible = false
+        D36.visible = false
+        D37.visible = false
+
+      } else if (singleSecond === 8) {
+
+        D31.visible = true
+        D32.visible = true //this is position 4
+        D33.visible = true
+        D34.visible = true
+        D35.visible = true
+        D36.visible = true
+        D37.visible = true
+
+      } else if (singleSecond === 9) {
+        //this is a nine
+        D31.visible = true
+        D32.visible = true
+        D33.visible = true
+        D34.visible = false
+        D35.visible = false
+        D36.visible = true
+        D37.visible = true
+
+      }
+
+
+      console.log('>>>>', singleSecond)
+
+    }
+
+
   }
 
   handleSOW = wire => {
@@ -398,6 +556,7 @@ class Bomb extends Component {
       }))
     }
   }
+
 
   render() {
 
