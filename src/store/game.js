@@ -11,14 +11,15 @@ const initialGame = {
     active: true,
     passed: false
   },
+  gameStarted: false,
   gameStatus: 'pending'
 }
 
 //ACTION TYPES
-const DEFINE_GAME = 'DEFINE_GAME'
+const START_GAME = 'START_GAME'
 
 //ACTION CREATORS
-export const defineGame = (settings) => ({type: DEFINE_GAME, settings})
+export const startGame = (settings) => ({type: START_GAME, settings})
 
 // THUNK CREATORS
 
@@ -26,8 +27,10 @@ export const defineGame = (settings) => ({type: DEFINE_GAME, settings})
 
 export default function(state = initialGame, action) {
   switch (action.type) {
-    case DEFINE_GAME: 
-    return state
+    case START_GAME: 
+    const { moduleTotal, startTime, strikesAllowed } = action.settings
+    const strikes = strikesAllowed ? 3 : 0
+    return {...state, moduleTotal, startTime, strikesAllowed: strikes, gameStarted: true}
     default:
     return state
   }

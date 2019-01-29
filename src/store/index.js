@@ -7,7 +7,7 @@ import game from './game'
 
 const reducers = combineReducers({ game })
 
-const middleware = applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
+const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware, createLogger({ collapsed: true })))
 
 const store = createStore(reducers, middleware)
 
