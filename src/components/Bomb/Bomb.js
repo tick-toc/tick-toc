@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
 import * as SOW from './SubjectOfWires/SubjectOfWires'
+import { clockCases } from './CountDown/CountDown'
 import { generateRandom } from '../../util'
 
 class Bomb extends Component {
@@ -41,10 +42,13 @@ class Bomb extends Component {
       },
 
       count: 300,
+      minute: 0,
+      tenSecond: 0,
+      singleSecond: 0,
       strikesAllowed: 3,
       strikeCount: 0,
       box: {},
-      clockTime: {},
+      clock: {},
       module1: {}
     }
 
@@ -200,7 +204,7 @@ class Bomb extends Component {
         });
         clock.castShadow = true;
         clock.receiveShadow = true;
-        THIS.setState({ clock })
+        // THIS.setState({ clock })
         clock.add(digital);
       });
 
@@ -395,309 +399,30 @@ class Bomb extends Component {
         this.state.module1.children.filter(a => a.name === 'LED1')[0].visible = true;
       }
 
-    if (prevState.count !== this.state.count) {
-      const count = this.state.count
-      const D11 = this.state.clock.children[9].children.find(child => child.name === 'D1-1')
-      const D12 = this.state.clock.children[9].children.find(child => child.name === 'D1-2')
-      const D13 = this.state.clock.children[9].children.find(child => child.name === 'D1-3')
-      const D14 = this.state.clock.children[9].children.find(child => child.name === 'D1-4')
-      const D15 = this.state.clock.children[9].children.find(child => child.name === 'D1-5')
-      const D16 = this.state.clock.children[9].children.find(child => child.name === 'D1-6')
-      const D17 = this.state.clock.children[9].children.find(child => child.name === 'D1-7')
-      const D21 = this.state.clock.children[9].children.find(child => child.name === 'D2-1')
-      const D22 = this.state.clock.children[9].children.find(child => child.name === 'D2-2')
-      const D23 = this.state.clock.children[9].children.find(child => child.name === 'D2-3')
-      const D24 = this.state.clock.children[9].children.find(child => child.name === 'D2-4')
-      const D25 = this.state.clock.children[9].children.find(child => child.name === 'D2-5')
-      const D26 = this.state.clock.children[9].children.find(child => child.name === 'D2-6')
-      const D27 = this.state.clock.children[9].children.find(child => child.name === 'D2-7')
-      const D31 = this.state.clock.children[9].children.find(child => child.name === 'D3-1')
-      const D32 = this.state.clock.children[9].children.find(child => child.name === 'D3-2')
-      const D33 = this.state.clock.children[9].children.find(child => child.name === 'D3-3')
-      const D34 = this.state.clock.children[9].children.find(child => child.name === 'D3-4')
-      const D35 = this.state.clock.children[9].children.find(child => child.name === 'D3-5')
-      const D36 = this.state.clock.children[9].children.find(child => child.name === 'D3-6')
-      const D37 = this.state.clock.children[9].children.find(child => child.name === 'D3-7')
-      var min = Math.floor(count / 60);
-      let seconds = count % 60;
-      console.log('min: ', min)
-      var tenSecond = Math.floor(seconds % 60 / 10)
-      var singleSecond = seconds % 10
-
-
-
-      console.log('>>>>>', this.state.clock.children[9].children)
-
-      if (singleSecond === 0) {
-        D31.visible = true
-        D32.visible = true
-        D33.visible = true
-        D34.visible = true
-        D35.visible = true
-        D36.visible = true
-        D37.visible = false
-
-      } else if (singleSecond === 1) {
-        D31.visible = false //position 1 set true
-        D32.visible = true //position 3
-        D33.visible = true //position 5
-        D34.visible = false //position 6 set true
-        D35.visible = false //position 4
-        D36.visible = false // position 2
-        D37.visible = false //position 7
-      } else if (singleSecond === 2) {
-        D31.visible = true //position 1 set true
-        D32.visible = true //position 3
-        D33.visible = false //position 5
-        D34.visible = true //position 6 set true
-        D35.visible = true //position 4
-        D36.visible = false // position 2
-        D37.visible = true //position 7
-
-
-      } else if (singleSecond === 3) {
-        D31.visible = true //position 1 set true
-        D32.visible = true //position 3
-        D33.visible = true //position 5
-        D34.visible = true //position 6 set true
-        D35.visible = false //position 4
-        D36.visible = false // position 2
-        D37.visible = true //position 7
-      } else if (singleSecond === 4) {
-        D31.visible = false //position 1 set true
-        D32.visible = true //position 3
-        D33.visible = true //position 5
-        D34.visible = false //position 6 set true
-        D35.visible = false //position 4
-        D36.visible = true // position 2
-        D37.visible = true //position 7
-      } else if (singleSecond === 5) {
-        D31.visible = true //position 1 set true
-        D32.visible = false //position 3
-        D33.visible = true //position 5
-        D34.visible = true //position 6 set true
-        D35.visible = false //position 4
-        D36.visible = true // position 2
-        D37.visible = true //position 7
-      } else if (singleSecond === 6) {
-        //this is a six
-        D31.visible = true
-        D32.visible = false
-        D33.visible = true
-        D34.visible = true
-        D35.visible = true
-        D36.visible = true
-        D37.visible = true
-
-
-      } else if (singleSecond === 7) {
-
-        D31.visible = true //position 1
-        D32.visible = true //position 3
-        D33.visible = true //position 5
-        D34.visible = false
-        D35.visible = false
-        D36.visible = false
-        D37.visible = false
-
-      } else if (singleSecond === 8) {
-
-        D31.visible = true
-        D32.visible = true //this is position 4
-        D33.visible = true
-        D34.visible = true
-        D35.visible = true
-        D36.visible = true
-        D37.visible = true
-
-      } else if (singleSecond === 9) {
-        //this is a nine
-        D31.visible = true
-        D32.visible = true
-        D33.visible = true
-        D34.visible = false
-        D35.visible = false
-        D36.visible = true
-        D37.visible = true
-
-      }
-
-      //--------
-      if (tenSecond === 0) {
-        D21.visible = true
-        D22.visible = true
-        D23.visible = true
-        D24.visible = true
-        D25.visible = true
-        D26.visible = true
-        D27.visible = false
-
-      } else if (tenSecond === 1) {
-        D21.visible = false //position 1 set true
-        D22.visible = true //position 3
-        D23.visible = true //position 5
-        D24.visible = false //position 6 set true
-        D25.visible = false //position 4
-        D26.visible = false // position 2
-        D27.visible = false //position 7
-      } else if (tenSecond === 2) {
-        D21.visible = true //position 1 set true
-        D22.visible = true //position 3
-        D23.visible = false //position 5
-        D24.visible = true //position 6 set true
-        D25.visible = true //position 4
-        D26.visible = false // position 2
-        D27.visible = true //position 7
-      } else if (tenSecond === 3) {
-        D21.visible = true //position 1 set true
-        D22.visible = true //position 3
-        D23.visible = true //position 5
-        D24.visible = true //position 6 set true
-        D25.visible = false //position 4
-        D26.visible = false // position 2
-        D27.visible = true //position 7
-      } else if (tenSecond === 4) {
-        D21.visible = false //position 1 set true
-        D22.visible = true //position 3
-        D23.visible = true //position 5
-        D24.visible = false //position 6 set true
-        D25.visible = false //position 4
-        D26.visible = true // position 2
-        D27.visible = true //position 7
-      } else if (tenSecond === 5) {
-        D21.visible = true //position 1 set true
-        D22.visible = false //position 3
-        D23.visible = true //position 5
-        D24.visible = true //position 6 set true
-        D25.visible = false //position 4
-        D26.visible = true // position 2
-        D27.visible = true //position 7
-      } else if (tenSecond === 6) {
-        D21.visible = true
-        D22.visible = false
-        D23.visible = true
-        D24.visible = true
-        D25.visible = true
-        D26.visible = true
-        D27.visible = true
-      } else if (tenSecond === 7) {
-        D21.visible = true //position 1
-        D22.visible = true //position 3
-        D23.visible = true //position 5
-        D24.visible = false
-        D25.visible = false
-        D26.visible = false
-        D27.visible = false
-      } else if (tenSecond === 8) {
-        D21.visible = true
-        D22.visible = true //this is position 4
-        D23.visible = true
-        D24.visible = true
-        D25.visible = true
-        D26.visible = true
-        D27.visible = true
-      } else if (tenSecond === 9) {
-        D21.visible = true
-        D22.visible = true
-        D23.visible = true
-        D24.visible = false
-        D25.visible = false
-        D26.visible = true
-        D27.visible = true
-      }
-
-      //-----
-
-      if (min === 0) {
-        D11.visible = true
-        D12.visible = true
-        D13.visible = true
-        D14.visible = true
-        D15.visible = true
-        D16.visible = true
-        D17.visible = false
-
-      } else if (min === 1) {
-        D11.visible = false //position 1 set true
-        D12.visible = true //position 3
-        D13.visible = true //position 5
-        D14.visible = false //position 6 set true
-        D15.visible = false //position 4
-        D16.visible = false // position 2
-        D17.visible = false //position 7
-      } else if (min === 2) {
-        D11.visible = true //position 1 set true
-        D12.visible = true //position 3
-        D13.visible = false //position 5
-        D14.visible = true //position 6 set true
-        D15.visible = true //position 4
-        D16.visible = false // position 2
-        D17.visible = true //position 7
-      } else if (min === 3) {
-        D11.visible = true //position 1 set true
-        D12.visible = true //position 3
-        D13.visible = true //position 5
-        D14.visible = true //position 6 set true
-        D15.visible = false //position 4
-        D16.visible = false // position 2
-        D17.visible = true //position 7
-      } else if (min === 4) {
-        D11.visible = false //position 1 set true
-        D12.visible = true //position 3
-        D13.visible = true //position 5
-        D14.visible = false //position 6 set true
-        D15.visible = false //position 4
-        D16.visible = true // position 2
-        D17.visible = true //position 7
-      } else if (min === 5) {
-        D11.visible = true //position 1 set true
-        D12.visible = false //position 3
-        D13.visible = true //position 5
-        D14.visible = true //position 6 set true
-        D15.visible = false //position 4
-        D16.visible = true // position 2
-        D17.visible = true //position 7
-      } else if (min === 6) {
-        D11.visible = true
-        D12.visible = false
-        D13.visible = true
-        D14.visible = true
-        D15.visible = true
-        D16.visible = true
-        D17.visible = true
-      } else if (min === 7) {
-        D11.visible = true //position 1
-        D12.visible = true //position 3
-        D13.visible = true //position 5
-        D14.visible = false
-        D15.visible = false
-        D16.visible = false
-        D17.visible = false
-      } else if (min === 8) {
-        D11.visible = true
-        D12.visible = true //this is position 4
-        D13.visible = true
-        D14.visible = true
-        D15.visible = true
-        D16.visible = true
-        D17.visible = true
-      } else if (min === 9) {
-        D11.visible = true
-        D12.visible = true
-        D13.visible = true
-        D14.visible = false
-        D15.visible = false
-        D16.visible = true
-        D17.visible = true
-      }
-
-      console.log('>>>> min', min)
-      console.log('>>>> tenSecond', tenSecond)
-      console.log('>>>> singleSecond', singleSecond)
-
+    const setClock = (position,time) => {
+      this.state.clock.children[9].children.filter(child => child.name.startsWith(`D${position}`))
+      .forEach((mark,index) => mark.visible = clockCases[String(time)][index])
     }
 
-
+    if (prevState.count !== this.state.count) {
+      const count = this.state.count
+      const minute = Math.floor( count / 60)
+      const seconds = count % 60
+      const tenSecond = Math.floor(seconds % 60 / 10)
+      const singleSecond = seconds % 10
+      if (prevState.minute !== minute) {
+        this.setState({ minute })
+        setClock('1',minute)
+      }
+      if (prevState.tenSecond !== tenSecond) {
+        this.setState({ tenSecond })
+        setClock('2',tenSecond)
+      }
+      if (prevState.singleSecond !== singleSecond) {
+        this.setState({ singleSecond })
+        setClock('3',singleSecond)
+      }
+    }
   }
 
   handleSOW = wire => {
