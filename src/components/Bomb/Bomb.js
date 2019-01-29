@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import * as THREE from 'three';
 import GLTFLoader from 'three-gltf-loader'
 import * as SOW from './SubjectOfWires/SubjectOfWires'
-import { generateRandom } from '../../util'
+import { clockCases } from './Clock/Clock'
+import { generateRandomIndex, sortByKey } from '../../util'
 
 class Bomb extends Component {
   constructor(props) {
@@ -40,13 +41,27 @@ class Bomb extends Component {
         failed: false
       },
 
-      timer: 300,
+      count: 300,
+      minute: 0,
+      tenSecond: 0,
+      singleSecond: 0,
       strikesAllowed: 3,
       strikeCount: 0,
       box: {},
-      clockTime: {},
+      clock: {},
       module1: {}
     }
+
+
+  }
+
+  handleStart() {
+    this.timer = setInterval(() => {
+      const newCount = this.state.count - 1;
+      this.setState(
+        { count: newCount >= 0 ? newCount : 0 }
+      );
+    }, 1000);
   }
 
   componentDidMount() {
@@ -57,6 +72,7 @@ class Bomb extends Component {
 
     init(this);
     animate();
+
 
     function init(THIS) {
 
@@ -149,7 +165,7 @@ class Bomb extends Component {
             if (o.name === 'Cube001') o.material = material2;
             else if (o.name === 'Cylinder') {
               o.material = material
-              targetList.push(o)
+
             } else if (o.name === 'Strike1' || o.name === 'Strike2') {
               o.material = new THREE.MeshPhongMaterial({
                 color: 0xFF0000,
@@ -179,7 +195,7 @@ class Bomb extends Component {
         });
         digital.traverse((o) => {
           if (o.isMesh) {
-            o.material = material;
+            o.material = material; //this is where we paint the clock
             if (o.name === 'D1-2') o.visible = false
             if (o.name === 'D1-5') o.visible = false
             if (o.name === 'D2-7') o.visible = false
@@ -188,7 +204,7 @@ class Bomb extends Component {
         });
         clock.castShadow = true;
         clock.receiveShadow = true;
-        THIS.setState({ clock })
+        // THIS.setState({ clock })
         clock.add(digital);
       });
 
@@ -206,20 +222,12 @@ class Bomb extends Component {
 
         let count = 3 // parseInt(SOW.wireCount[Math.floor(Math.random() * wireCount.length)])
         let wireCases = SOW.wireCountCases[count]
-        let wireCase = wireCases[generateRandom(wireCases.length)]
+        let wireCase = wireCases[generateRandomIndex(wireCases.length)]
         let wires = module1.children.filter(element => element.name.startsWith('Wire'))
-        let uncutWires = wires.filter(wire => !wire.name.endsWith('Cut')).sort((a, b) => {
-          if (a.name < b.name) return -1
-          else if (a.name > b.name) return 1
-          else return 0
-        })
-        let cutWires = wires.filter(wire => wire.name.endsWith('Cut')).sort((a, b) => {
-          if (a.name < b.name) return -1
-          else if (a.name > b.name) return 1
-          else return 0
-        })
+        let uncutWires = wires.filter(wire => !wire.name.endsWith('Cut')).sort((a, b) => sortByKey(a,b,'name'))
+        let cutWires = wires.filter(wire => wire.name.endsWith('Cut')).sort((a, b) => sortByKey(a,b,'name'))
         while (cutWires.length > count) {
-          let wireIndex = generateRandom(cutWires.length)
+          let wireIndex = generateRandomIndex(cutWires.length)
           module1.remove(cutWires[wireIndex])
           module1.remove(uncutWires[wireIndex])
           cutWires = cutWires.filter((wire, index) => index !== wireIndex)
@@ -362,6 +370,7 @@ class Bomb extends Component {
 
       renderer.render(scene, camera);
     }
+    this.handleStart()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -382,6 +391,30 @@ class Bomb extends Component {
         this.state.module1.children.filter(a => a.name === 'LED1')[0].visible = true;
       }
 
+    const setClock = (position,time) => {
+      this.state.clock.children[9].children.filter(child => child.name.startsWith(`D${position}`))
+      .sort((a,b) => sortByKey(a,b,'name')).forEach((mark,index) => mark.visible = clockCases[String(time)][index])
+    }
+
+    if (prevState.count !== this.state.count) {
+      const { count } = this.state
+      const minute = Math.floor( count / 60)
+      const seconds = count % 60
+      const tenSecond = Math.floor(seconds % 60 / 10)
+      const singleSecond = seconds % 10
+      if (prevState.minute !== minute) {
+        this.setState({ minute })
+        setClock('1',minute)
+      }
+      if (prevState.tenSecond !== tenSecond) {
+        this.setState({ tenSecond })
+        setClock('2',tenSecond)
+      }
+      if (prevState.singleSecond !== singleSecond) {
+        this.setState({ singleSecond })
+        setClock('3',singleSecond)
+      }
+    }
   }
 
   handleSOW = wire => {
@@ -398,6 +431,7 @@ class Bomb extends Component {
       }))
     }
   }
+
 
   render() {
 
