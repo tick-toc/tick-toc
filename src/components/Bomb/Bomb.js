@@ -4,6 +4,8 @@ import GLTFLoader from 'three-gltf-loader'
 import * as SOW from './SubjectOfWires/SubjectOfWires'
 import { clockCases } from './Clock/Clock'
 import { generateRandomIndex, sortByKey } from '../../util'
+import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 
 class Bomb extends Component {
   constructor(props) {
@@ -41,12 +43,13 @@ class Bomb extends Component {
         failed: false
       },
 
-      count: 300,
+      count: this.props.startTime,
       minute: 0,
       tenSecond: 0,
       singleSecond: 0,
-      strikesAllowed: 3,
+      strikesAllowed: this.props.strikesAllowed,
       strikeCount: 0,
+      moduleTotal: this.props.moduleTotal,
       box: {},
       clock: {},
       module1: {}
@@ -468,11 +471,14 @@ class Bomb extends Component {
 
 
   render() {
-
+    if (!this.props.gameStarted) this.props.history.push('/new-game')
     return (
       <div id="bomb-box" ref={this.canvasRef.current} />
     );
   }
 }
 
-export default Bomb;
+const mapState = ({ game: { startTime, strikesAllowed, moduleTotal, gameStarted } }) => 
+({startTime, strikesAllowed, moduleTotal, gameStarted})
+
+export default connect(mapState,null)(Bomb)
