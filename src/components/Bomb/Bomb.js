@@ -47,9 +47,11 @@ class Bomb extends Component {
       singleSecond: 0,
       strikesAllowed: 3,
       strikeCount: 0,
+      spotLight: {},
       box: {},
       clock: {},
-      module1: {}
+      module1: {},
+      module2: {}
     }
 
 
@@ -96,6 +98,8 @@ class Bomb extends Component {
       spotLight.shadow.mapSize.width = 1024;
       spotLight.shadow.mapSize.height = 1024;
       scene.add(spotLight);
+      THIS.setState({ spotLight })
+
 
       let dirLight = new THREE.DirectionalLight(0x55505a, 1);
       dirLight.position.set(0, 3, 0);
@@ -120,14 +124,6 @@ class Bomb extends Component {
         gltf.scene.position.y = 1.7;				    //Position (y = up+, down-)
         gltf.scene.position.z = 0;				    //Position (z = front +, back-)
         gltf.scene.rotation.x = Math.PI / 2;
-        let material = new THREE.MeshPhongMaterial({
-          color: 0xa9acb5,
-          shininess: 100,
-        });
-        let material2 = new THREE.MeshPhongMaterial({
-          color: 0x222222,
-          shininess: 10,
-        });
         box.traverse((o) => {
             if (o.isMesh) {
               if (o.name === 'Cube001') {
@@ -274,31 +270,52 @@ class Bomb extends Component {
         glft.scene.rotation.y = - Math.PI / 2;
 
         module2.traverse((o) => {
-          var img = new THREE.MeshBasicMaterial({
-            map:THREE.ImageUtils.loadTexture('/models/Button1.png')
-          })
+          var texture = new THREE.TextureLoader().load( '/models/Button1.png' );
+          texture.wrapS = THREE.RepeatWrapping;
+          texture.repeat.x = -1;
+
           if (o.isMesh) {
             if (o.name === 'Cube' || o.name ==='Cylinder' || o.name === 'LEDbase' || o.name === 'Circle001') o.material = SOW.defaultMaterial
             else if (o.name === 'Cube001') o.material = SOW.cubeMaterial
-            else if (o.name === 'Circle') o.material = img
-            else if (o.name === 'LED') {
+            else if (o.name === 'Circle002' || o.name ==='Circle') {
+              o.material =  new THREE.MeshPhongMaterial({ map: texture});
+              o.rotation.x = -2.85;
+              targetList.push(o)
+            } else if (o.name === 'LED') {
               let em = new THREE.Color(0x000000);
               let LEDmo2 = new THREE.PointLight(0x00ff00, 5, 0.2, 2);
               LEDmo2.name = "LEDlight"
               module2.add(LEDmo2);
               LEDmo2.position.copy(o.position);
-              LEDmo2.visible = true;
-              o.material = new THREE.MeshPhongMaterial({ transparent: true, opacity: 0.9, emissive: em, color: LEDmo2.color, shininess: 100 });
+              LEDmo2.visible = false;
+              o.material = new THREE.MeshPhongMaterial({ transparent: true, opacity: 0.9, emissive: em, color: em, shininess: 100 });
             } else if (o.name === 'Cube002') {
               let em = new THREE.Color(0x000000);
-              let SEDmo2 = new THREE.PointLight(0x777700, 10, 0.8, 2);
-              SEDmo2.name = "LEDstripe"
-              module2.add(SEDmo2);
-              SEDmo2.position.copy(o.position);
-              SEDmo2.visible = false;
-              o.material = new THREE.MeshPhongMaterial({ transparent: true, opacity: 0.9, emissive: em, color: SEDmo2.color, shininess: 100 });
+              let SED1 = new THREE.PointLight(0x777700, 4, 13, 200);
+              SED1.name = "LEDstripe1"
+              module2.add(SED1);
+              SED1.position.copy(o.position);
+              SED1.position.z -= 0.9
+              SED1.position.x -= 0.8
+              SED1.position.y += 0.1
+              let SED2 = SED1.clone()
+              SED2.name = "LEDstripe2"
+              SED2.position.y -= 0.25
+              module2.add(SED2)
+              let SED3 = SED1.clone()
+              SED3.name = "LEDstripe3"
+              SED3.position.y -= 0.5
+              module2.add(SED3)
+              let SED4 = SED1.clone()
+              SED4.name = "LEDstripe4"
+              SED4.position.y -= 0.75
+              module2.add(SED4)
+              o.material = new THREE.MeshPhongMaterial({ transparent: true, opacity: 0.9, emissive: em, color: SED1.color, shininess: 500 });
             }
           }
+        module2.castShadow = true;
+        module2.receiveShadow = true;
+        THIS.setState({ module2 })
         box.add(module2)
         })
       })
@@ -358,6 +375,7 @@ class Bomb extends Component {
 
       document.addEventListener('mouseup', (e) => {
         isDragging = false;
+        if(module2.children.filter(a => a.name.startsWith('Circle'))[0].position.x < 0.4) module2.children.filter(a => a.name.startsWith('Circle')).map(b => b.position.x += 0.18)
       });
 
       projector = new THREE.Projector();
@@ -386,6 +404,11 @@ class Bomb extends Component {
       if (intersects.length > 0) {
         THIS.handleSOW(intersects[0].object.userData)
         module1.remove(intersects[0].object)
+        console.log(intersects[0])
+        if(intersects[0].object.name === 'Circle' || intersects[0].object.name ==='Circle002') { console.log(module2.children.filter(a => a.name.startsWith('Circle')))
+        module2.children.filter(a => a.name.startsWith('Circle')).map(b => b.position.x -= 0.18)
+        console.log(module2.children.filter(a => a.name.startsWith('Circle')))
+        }
       }
     }
 
@@ -439,6 +462,15 @@ class Bomb extends Component {
       if (prevState.minute !== minute) {
         this.setState({ minute })
         setClock('1',minute)
+        if(minute === 0) {
+          let spotLight = this.state.spotLight
+          spotLight.color.g = 0
+          spotLight.color.b = 0
+          spotLight.intensity = 0.7
+          console.log(spotLight)
+          setInterval(function(){ spotLight.visible = !spotLight.visible }, 1000);
+          this.setState({ spotLight})
+        }
       }
       if (prevState.tenSecond !== tenSecond) {
         this.setState({ tenSecond })
